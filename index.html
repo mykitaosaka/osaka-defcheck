@@ -318,7 +318,6 @@
 </head>
 <body>
 <div id="app"></div>
-<input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none" onchange="onCameraChange(this)">
 <input type="file" id="gallery-input" accept="image/*" style="display:none" onchange="onGalleryChange(this)">
 <button id="scroll-fab" class="fab" style="display:none" onclick="fabTap()">↓</button>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1093,7 +1092,18 @@ function idbGet(key){return _openIdb().then(db=>new Promise((res,rej)=>{const tx
 async function resolvePhotoAsync(key){if(!key)return null;if(key.startsWith('data:'))return key;if(_pc[key])return _pc[key];const v=await idbGet(key).catch(()=>null);if(v)_pc[key]=v;return v||null;}
 let _photoRenderPending=false;
 function _schedulePhotoRender(){if(_photoRenderPending)return;_photoRenderPending=true;setTimeout(()=>{_photoRenderPending=false;render();},200);}
-function photoSrc(v){if(!v)return '';if(v.startsWith('data:'))return v;if(_pc[v])return _pc[v];resolvePhotoAsync(v).then(url=>{if(url)_schedulePhotoRender();});return '';}
+function photoSrc(v){
+  if(!v)return '';
+  if(v.startsWith('data:'))return v;
+  if(_pc[v])return _pc[v];
+  resolvePhotoAsync(v).then(url=>{
+    if(url){_schedulePhotoRender();}
+    else if(_photoIdx&&_photoIdx[v]&&gRepo()){
+      _ghDownloadAsset(gRepo(),_photoIdx[v]).then(dataURL=>{idbPut(v,dataURL);_schedulePhotoRender();}).catch(()=>{});
+    }
+  });
+  return '';
+}
 function newDefect(){return {part:'',partOther:null,partDetail:null,side:'',cond:[],condOther:null};}
 function togglePartDetailOpen(no,idx){
   const k=no+'_'+idx;
@@ -2032,23 +2042,6 @@ function openMarkup(no,idx){
 }
 
 /* PHOTOS */
-async function capturePhoto(no){
-  // Use file input trick for iOS camera
-  const inp=document.getElementById('cam-'+no);
-  if(inp) inp.click();
-}
-let _cameraNo=null;
-function triggerCamera(no, e){
-  if(e){e.stopPropagation();e.preventDefault();}
-  _cameraNo=no;
-  const inp=document.getElementById('camera-input');
-  inp.value='';
-  inp.click();
-}
-function onCameraChange(inp){
-  if(inp.files[0]&&_cameraNo) handlePhoto(_cameraNo, inp.files[0]);
-  _cameraNo=null;
-}
 let _galleryNo=null;
 function triggerGallery(no, e){
   if(e){e.stopPropagation();e.preventDefault();}
