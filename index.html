@@ -1217,7 +1217,7 @@ function invCardHtml(e,isArchived){
         ${(()=>{const dt=e.dispTotal||0;const ds=e.dispSet||0;const rc=e.receCount||0;const parts=[];if(dt){const allSet=ds===dt;parts.push(`<span style="color:${allSet?'var(--teal)':'var(--g600)'}">Disposition: ${ds} / ${dt}${allSet?' — complete':''}</span>`);}if(rc){const total=(dt||0)+rc;parts.push(`<span style="color:var(--blue)">RECE: ${rc} / ${total}</span>`);}return parts.length?`<div class="inv-card-prg" style="margin-top:2px;display:flex;gap:10px;flex-wrap:wrap">${parts.join('')}</div>`:''})()}
         ${(e.dispTotal>0||e.receCount>0)?`<div style="display:flex;gap:7px;margin-top:8px;flex-wrap:wrap">
           ${e.sent
-            ?`<button id="disp-btn-${e.id}" class="inv-card-act-btn" style="border-color:var(--teal);color:var(--teal)" onclick="event.stopPropagation();openDispSheet('${e.id}')">DISP ${e.dispSet||0}/${e.dispTotal}${e.receCount?` · RECE ${e.receCount}`:''}</button>`
+            ?`${e.dispTotal>0?`<button id="disp-btn-${e.id}" class="inv-card-act-btn" style="border-color:var(--teal);color:var(--teal)" onclick="event.stopPropagation();openDispSheet('${e.id}')">DISP ${e.dispSet||0}/${e.dispTotal}</button>`:''}${e.receCount?`<button class="inv-card-act-btn" style="border-color:var(--blue);color:var(--blue)" onclick="event.stopPropagation();openDispSheet('${e.id}')">RECE ${e.receCount}</button>`:''}`
             :`<button class="inv-card-act-btn" style="border-color:var(--red);color:var(--red)" onclick="event.stopPropagation();openDefSheet('${e.id}')">DEF LIST</button>`}
         </div>`:''}
       </div>
