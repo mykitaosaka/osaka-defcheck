@@ -339,76 +339,78 @@ let _recDatePicker=null;
 let _defOkSet=new Set(),_defSw={no:null,startX:0,startY:0,curX:0,openNo:null,moved:false};
 let _dispSw={no:null,startX:0,startY:0,curX:0,openNo:null,moved:false};
 const _DSW=80;
+function _swXY(e){if(e.touches&&e.touches.length)return[e.touches[0].clientX,e.touches[0].clientY];return[e.clientX,e.clientY];}
 function defSwStart(e,no){
-  if(e.touches.length!==1)return;
-  _defSw={openNo:_defSw.openNo,no,startX:e.touches[0].clientX,startY:e.touches[0].clientY,curX:e.touches[0].clientX,moved:false};
+  const isTouch=!!e.touches;
+  if(isTouch&&e.touches.length!==1)return;
+  const[x,y]=_swXY(e);
+  _defSw={openNo:_defSw.openNo,no,startX:x,startY:y,curX:x,moved:false};
+  if(!isTouch){document.addEventListener('mousemove',_defSwMM);document.addEventListener('mouseup',_defSwMU);}
 }
-function defSwMove(e){
+function _defSwMM(e){
   if(!_defSw.no)return;
-  const dx=e.touches[0].clientX-_defSw.startX;
-  const dy=e.touches[0].clientY-_defSw.startY;
+  const dx=e.clientX-_defSw.startX,dy=e.clientY-_defSw.startY;
   if(!_defSw.moved&&Math.abs(dx)<6)return;
   if(!_defSw.moved&&Math.abs(dy)>Math.abs(dx)){_defSw.no=null;return;}
-  _defSw.moved=true;
-  _defSw.curX=e.touches[0].clientX;
-  e.preventDefault();
-  const el=document.querySelector(`[data-defno="${_defSw.no}"]`);
-  if(!el)return;
+  _defSw.moved=true;_defSw.curX=e.clientX;
+  const el=document.querySelector(`[data-defno="${_defSw.no}"]`);if(!el)return;
   const base=_defSw.openNo===_defSw.no?-_DSW:0;
-  el.style.transition='none';
-  el.style.transform=`translateX(${Math.min(0,Math.max(base+dx,-_DSW))}px)`;
+  el.style.transition='none';el.style.transform=`translateX(${Math.min(0,Math.max(base+dx,-_DSW))}px)`;
 }
-function defSwEnd(e){
+function _defSwMU(){document.removeEventListener('mousemove',_defSwMM);document.removeEventListener('mouseup',_defSwMU);defSwEnd();}
+function defSwMove(e){
+  if(!_defSw.no||!e.touches)return;
+  const dx=e.touches[0].clientX-_defSw.startX,dy=e.touches[0].clientY-_defSw.startY;
+  if(!_defSw.moved&&Math.abs(dx)<6)return;
+  if(!_defSw.moved&&Math.abs(dy)>Math.abs(dx)){_defSw.no=null;return;}
+  _defSw.moved=true;_defSw.curX=e.touches[0].clientX;e.preventDefault();
+  const el=document.querySelector(`[data-defno="${_defSw.no}"]`);if(!el)return;
+  const base=_defSw.openNo===_defSw.no?-_DSW:0;
+  el.style.transition='none';el.style.transform=`translateX(${Math.min(0,Math.max(base+dx,-_DSW))}px)`;
+}
+function defSwEnd(){
   if(!_defSw.no)return;
-  const no=_defSw.no;
-  const el=document.querySelector(`[data-defno="${no}"]`);
-  const dx=_defSw.curX-_defSw.startX;
-  const wasOpen=_defSw.openNo===no;
+  const no=_defSw.no,el=document.querySelector(`[data-defno="${no}"]`),dx=_defSw.curX-_defSw.startX,wasOpen=_defSw.openNo===no;
   if(el)el.style.transition='transform 0.2s';
-  if(!_defSw.moved){
-    if(wasOpen){_defSw.openNo=null;if(el)el.style.transform='translateX(0)';}
-  }else if(dx<-_DSW/3||(!wasOpen&&dx<-16)){
-    _defSw.openNo=no;
-    if(el)el.style.transform=`translateX(-${_DSW}px)`;
-  }else{
-    _defSw.openNo=null;
-    if(el)el.style.transform='translateX(0)';
-  }
+  if(!_defSw.moved){if(wasOpen){_defSw.openNo=null;if(el)el.style.transform='translateX(0)';}}
+  else if(dx<-_DSW/3||(!wasOpen&&dx<-16)){_defSw.openNo=no;if(el)el.style.transform=`translateX(-${_DSW}px)`;}
+  else{_defSw.openNo=null;if(el)el.style.transform='translateX(0)';}
   _defSw.no=null;
 }
 function dispSwStart(e,no){
-  if(e.touches.length!==1)return;
-  _dispSw={openNo:_dispSw.openNo,no,startX:e.touches[0].clientX,startY:e.touches[0].clientY,curX:e.touches[0].clientX,moved:false};
+  const isTouch=!!e.touches;
+  if(isTouch&&e.touches.length!==1)return;
+  const[x,y]=_swXY(e);
+  _dispSw={openNo:_dispSw.openNo,no,startX:x,startY:y,curX:x,moved:false};
+  if(!isTouch){document.addEventListener('mousemove',_dispSwMM);document.addEventListener('mouseup',_dispSwMU);}
 }
-function dispSwMove(e){
+function _dispSwMM(e){
   if(!_dispSw.no)return;
-  const dx=e.touches[0].clientX-_dispSw.startX;
-  const dy=e.touches[0].clientY-_dispSw.startY;
+  const dx=e.clientX-_dispSw.startX,dy=e.clientY-_dispSw.startY;
   if(!_dispSw.moved&&Math.abs(dx)<6)return;
   if(!_dispSw.moved&&Math.abs(dy)>Math.abs(dx)){_dispSw.no=null;return;}
-  _dispSw.moved=true;
-  _dispSw.curX=e.touches[0].clientX;
-  e.preventDefault();
-  const el=document.querySelector(`[data-dispno="${_dispSw.no}"]`);
-  if(!el)return;
+  _dispSw.moved=true;_dispSw.curX=e.clientX;
+  const el=document.querySelector(`[data-dispno="${_dispSw.no}"]`);if(!el)return;
   const base=_dispSw.openNo===_dispSw.no?-_DSW:0;
   el.style.transform=`translateX(${Math.min(0,Math.max(base+dx,-_DSW))}px)`;
 }
-function dispSwEnd(e){
+function _dispSwMU(){document.removeEventListener('mousemove',_dispSwMM);document.removeEventListener('mouseup',_dispSwMU);dispSwEnd();}
+function dispSwMove(e){
+  if(!_dispSw.no||!e.touches)return;
+  const dx=e.touches[0].clientX-_dispSw.startX,dy=e.touches[0].clientY-_dispSw.startY;
+  if(!_dispSw.moved&&Math.abs(dx)<6)return;
+  if(!_dispSw.moved&&Math.abs(dy)>Math.abs(dx)){_dispSw.no=null;return;}
+  _dispSw.moved=true;_dispSw.curX=e.touches[0].clientX;e.preventDefault();
+  const el=document.querySelector(`[data-dispno="${_dispSw.no}"]`);if(!el)return;
+  const base=_dispSw.openNo===_dispSw.no?-_DSW:0;
+  el.style.transform=`translateX(${Math.min(0,Math.max(base+dx,-_DSW))}px)`;
+}
+function dispSwEnd(){
   if(!_dispSw.no)return;
-  const no=_dispSw.no;
-  const el=document.querySelector(`[data-dispno="${no}"]`);
-  const dx=_dispSw.curX-_dispSw.startX;
-  const wasOpen=_dispSw.openNo===no;
-  if(!_dispSw.moved){
-    if(wasOpen){_dispSw.openNo=null;if(el)el.style.transform='translateX(0)';}
-  }else if(dx<-_DSW/3||(!wasOpen&&dx<-16)){
-    _dispSw.openNo=no;
-    if(el)el.style.transform=`translateX(-${_DSW}px)`;
-  }else{
-    _dispSw.openNo=null;
-    if(el)el.style.transform='translateX(0)';
-  }
+  const no=_dispSw.no,el=document.querySelector(`[data-dispno="${no}"]`),dx=_dispSw.curX-_dispSw.startX,wasOpen=_dispSw.openNo===no;
+  if(!_dispSw.moved){if(wasOpen){_dispSw.openNo=null;if(el)el.style.transform='translateX(0)';}}
+  else if(dx<-_DSW/3||(!wasOpen&&dx<-16)){_dispSw.openNo=no;if(el)el.style.transform=`translateX(-${_DSW}px)`;}
+  else{_dispSw.openNo=null;if(el)el.style.transform='translateX(0)';}
   _dispSw.no=null;
 }
 function _parseInvDate(d){const m1=d.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);if(m1)return new Date(+m1[3],+m1[2]-1,+m1[1]).getTime();const m2=d.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);if(m2)return new Date(+m2[1],+m2[2]-1,+m2[3]).getTime();return 0;}
@@ -2961,8 +2963,9 @@ function render(){
                 <button onclick="defToggleOk('${it.no}')" style="color:${isOk?'var(--g600)':'#fff'};font-size:9px;letter-spacing:0.5px;font-weight:600;background:none;border:none;cursor:pointer;font-family:inherit">${isOk?'UNDO':'DEF → OK'}</button>
               </div>
               <div data-defno="${it.no}"
-                ontouchstart="defSwStart(event,'${it.no}')" ontouchmove="defSwMove(event)" ontouchend="defSwEnd(event)"
-                style="background:var(--w);transform:translateX(${_defSw.openNo===it.no?-_DSW:0}px);transition:transform 0.2s;opacity:${isOk?0.35:1};padding:12px 0;border-bottom:1px solid var(--g100);pointer-events:${isOk?'none':'auto'}">
+                ontouchstart="defSwStart(event,'${it.no}')" ontouchmove="defSwMove(event)" ontouchend="defSwEnd()"
+                onmousedown="defSwStart(event,'${it.no}')"
+                style="background:var(--w);transform:translateX(${_defSw.openNo===it.no?-_DSW:0}px);transition:transform 0.2s;opacity:${isOk?0.35:1};padding:12px 0;border-bottom:1px solid var(--g100);pointer-events:${isOk?'none':'auto'};cursor:grab">
                 ${innerContent}
               </div>
             </div>`;
@@ -2973,8 +2976,9 @@ function render(){
               <button onclick="toggleReceiving('${it.no}')" style="color:${isRec?'var(--g600)':'#fff'};font-size:9px;letter-spacing:0.5px;font-weight:600;background:none;border:none;cursor:pointer;font-family:inherit">${isRec?'UNDO':'Receiving'}</button>
             </div>
             <div data-dispno="${it.no}"
-              ontouchstart="dispSwStart(event,'${it.no}')" ontouchmove="dispSwMove(event)" ontouchend="dispSwEnd(event)"
-              style="background:var(--w);transform:translateX(${_dispSw.openNo===it.no?-_DSW:0}px);transition:transform 0.2s;padding:12px 0;border-bottom:1px solid var(--g100)">
+              ontouchstart="dispSwStart(event,'${it.no}')" ontouchmove="dispSwMove(event)" ontouchend="dispSwEnd()"
+              onmousedown="dispSwStart(event,'${it.no}')"
+              style="background:var(--w);transform:translateX(${_dispSw.openNo===it.no?-_DSW:0}px);transition:transform 0.2s;padding:12px 0;border-bottom:1px solid var(--g100);cursor:grab">
               ${innerContent}
             </div>
           </div>`;
