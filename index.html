@@ -2495,7 +2495,7 @@ function render(){
       </div>
       <div class="tabs">${FILTERS.map(([k,l])=>`<div class="tab${S.filter===k?' act':''}" onclick="S.filter='${k}';render()">${l}</div>`).join('')}</div>
       <div style="padding:8px 20px 0">
-        <input type="search" value="${esc(S.itemSearch)}" placeholder="アイテム名を検索..."
+        <input id="item-search-input" type="search" value="${esc(S.itemSearch)}" placeholder="アイテム名を検索..."
           style="width:100%;box-sizing:border-box;padding:7px 12px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;outline:none;background:var(--w);color:var(--k)"
           oninput="S.itemSearch=this.value;render()" onclick="event.stopPropagation()">
       </div>
