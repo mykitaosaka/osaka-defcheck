@@ -421,7 +421,9 @@ function toggleReceiving(no){
     _dispSheet.inv.items=_dispSheet.inv.items.map(i=>i.no!==no?i:{...i,receiving:false,receivingDate:null});
     _dispSw.openNo=null;render();
   }else{
-    const dates=[...new Set(loadList().filter(e=>!e.archived&&e.date).map(e=>e.date))].sort((a,b)=>_parseInvDate(b)-_parseInvDate(a));
+    const _rdEntries=loadList().filter(e=>!e.archived&&e.createdAt).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    const _rdSeen=new Set();
+    const dates=_rdEntries.map(e=>new Date(e.createdAt).toLocaleDateString('ja-JP')).filter(d=>_rdSeen.has(d)?false:(_rdSeen.add(d),true));
     _recDatePicker={no,dates,selected:dates[0]||''};
     render();
   }
