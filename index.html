@@ -3064,9 +3064,7 @@ function fabTap(){
   if(fabAtBottom()){
     window.scrollTo({top:0,behavior:'smooth'});
   } else {
-    const t=document.querySelector('.def-sum,.war-sum');
-    if(t)t.scrollIntoView({behavior:'smooth'});
-    else window.scrollTo({top:Math.max(document.body.scrollHeight,document.documentElement.scrollHeight),behavior:'smooth'});
+    window.scrollTo({top:Math.max(document.body.scrollHeight,document.documentElement.scrollHeight),behavior:'smooth'});
   }
 }
 function updateFab(){
