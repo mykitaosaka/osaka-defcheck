@@ -937,7 +937,9 @@ async function gistPush(){
     localStorage.setItem(GK_AT,new Date().toISOString());
     _markClean();_syncSt='ok';
     const finalId=gistId||data.id;
-    _syncMsg='Push完了 (Gist: '+(finalId?finalId.slice(0,8)+'…':'new')+' / '+list.length+'件)';
+    const pushedInvCount=Object.keys(invFiles).filter(k=>k.startsWith('inv_')).length;
+    _syncMsg='Push完了 (Gist: '+(finalId?finalId.slice(0,8)+'…':'new')+' / リスト: '+mergedList.length+'件 / invファイル: '+pushedInvCount+'個)';
+    alert(_syncMsg);
     // Step4: 写真同期は完全に分離して非同期実行（インボイス同期とは独立）
     _pushPhotosSilent(finalId,_cur).catch(e=>console.warn('Photo sync (bg) failed:',e.message));
   }catch(e){_syncSt='err';_syncMsg='Push失敗: '+e.message;alert('Push失敗: '+e.message);}
@@ -959,16 +961,20 @@ async function _pushPhotosSilent(gistId,cur){
 async function gistPull(){
   if(!gPat()||!gId()){alert('TokenとGist IDを設定してください');return;}
   _syncSt='pull';_syncMsg='';render();
-  try{await _gistDoPull();_syncSt='ok';S.showSettings=false;}
+  try{
+    await _gistDoPull();
+    _syncSt='ok';S.showSettings=false;
+    alert(_syncMsg||'Pull完了');
+  }
   catch(e){_syncSt='err';_syncMsg='Pull失敗: '+e.message;alert('Pull失敗: '+e.message);}
   render();setTimeout(()=>{if(_syncSt==='ok'){_syncSt=null;render();}},3000);
 }
 async function gistAutoSync(){
   if(!gPat()||!gId())return;
   _syncSt='pull';_syncMsg='';render();
-  try{await _gistDoPull();_syncSt='ok';_syncMsg='';}
-  catch(e){_syncSt=null;}
-  render();setTimeout(()=>{if(_syncSt==='ok'){_syncSt=null;render();}},3000);
+  try{await _gistDoPull();_syncSt='ok';}
+  catch(e){_syncSt='err';_syncMsg='自動Pull失敗: '+e.message;}
+  render();setTimeout(()=>{if(_syncSt==='ok'||_syncSt==='err'){_syncSt=null;render();}},5000);
 }
 function gistCopyId(){
   const id=gId();
