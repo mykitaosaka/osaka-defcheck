@@ -810,7 +810,7 @@ async function _gFetch(url,opts={}){
 async function _gistDoPull(){
   const pat=gPat(),id=gId();
   if(!pat||!id)throw new Error('Token/ID未設定');
-  const data=await _gFetch('https://api.github.com/gists/'+id);
+  const data=await _gFetch('https://api.github.com/gists/'+id+'?_t='+Date.now());
   // getC: fetch file content; truncated→try raw_url; if raw fails return null (fi.content is partial/broken)
   const getC=async fi=>{
     if(!fi.truncated)return fi.content||null;
@@ -908,17 +908,27 @@ async function gistPush(){
   S.pushing=true;_syncSt='push';_syncMsg='';render();
   try{
     const list=loadList();
-    const files={'list.json':{content:JSON.stringify(list)}};
+    const files={};
     list.forEach(e=>{const d=localStorage.getItem('mykita_dc_inv_'+e.id);if(d){try{const inv=JSON.parse(d);const clean={...inv,items:inv.items.map(it=>({...it,photos:(it.photos||[]).filter(p=>p&&!p.startsWith('data:'))}))};files['inv_'+e.id+'.json']={content:JSON.stringify(clean)};}catch(x){files['inv_'+e.id+'.json']={content:d};}}});
     const gistId=gId();
     let cur=null;
+    // Gistの現在の内容を取得してリストをマージ（他デバイスのインボイスを消さないため）
+    let mergedList=[...list];
     if(gistId){
-      cur=await _gFetch('https://api.github.com/gists/'+gistId);
-      const localIds=new Set(list.map(e=>e.id));
-      for(const fn of Object.keys(cur.files)){
-        if(fn.startsWith('inv_')&&fn.endsWith('.json')&&!localIds.has(fn.slice(4,-5)))files[fn]=null;
-      }
+      cur=await _gFetch('https://api.github.com/gists/'+gistId+'?_t='+Date.now());
+      try{
+        const lf=cur.files['list.json'];
+        if(lf){
+          const rc=lf.truncated?await fetch(lf.raw_url,{headers:{'Authorization':'token '+gPat()}}).then(r=>r.text()):lf.content;
+          if(rc){
+            const remoteList=JSON.parse(rc);
+            const localIds=new Set(list.map(e=>e.id));
+            for(const e of remoteList){if(!localIds.has(e.id))mergedList.push(e);}
+          }
+        }
+      }catch(mergeErr){console.warn('List merge failed (local only):',mergeErr.message);}
     }
+    files['list.json']={content:JSON.stringify(mergedList)};
     // 写真: 失敗してもインボイスPushをブロックしない
     try{
       if(gRepo()){
@@ -937,7 +947,9 @@ async function gistPush(){
       localStorage.setItem(GK_ID,data.id);
     }
     localStorage.setItem(GK_AT,new Date().toISOString());
-    _markClean();_syncSt='ok';_syncMsg='Push完了';
+    _markClean();_syncSt='ok';
+    const finalId=gistId||data.id;
+    _syncMsg='Push完了 (Gist: '+(finalId?finalId.slice(0,8)+'…':'new')+' / '+list.length+'件)';
   }catch(e){_syncSt='err';_syncMsg='Push失敗: '+e.message;alert('Push失敗: '+e.message);}
   S.pushing=false;render();setTimeout(()=>{if(_syncSt==='ok'){_syncSt=null;render();}},3000);
 }
