@@ -2588,7 +2588,7 @@ function render(){
               const grpOkCnt=grpAll.filter(g=>g.status==='ok').length;
               const grpDefCnt=grpAll.filter(g=>g.status==='defective').length;
               const grpAllOk=grpOkCnt===grpAll.length;
-              const collapsed=!!S.grpCollapsed[it.subOf];
+              const collapsed = it.subOf in S.grpCollapsed ? !!S.grpCollapsed[it.subOf] : it.cat==='parts';
               const statusSummary=collapsed
                 ?` &nbsp;<span style="color:${grpAllOk?'var(--green)':grpDefCnt?'var(--red)':'var(--g400)'}">${grpAllOk?'ALL OK':grpDefCnt?`OK ${grpOkCnt} · D ${grpDefCnt} / ${grpAll.length}点`:`${grpAll.length}点 未検品`}</span>`
                 :'';
@@ -2604,7 +2604,8 @@ function render(){
               </div>`;
             }
             // SUB-ITEM (part of multi-qty group) — skip if group collapsed
-            if(it.subOf!==null&&S.grpCollapsed[it.subOf]){}
+            const _grpCollapsed = it.subOf!==null && (it.subOf in S.grpCollapsed ? !!S.grpCollapsed[it.subOf] : it.cat==='parts');
+            if(it.subOf!==null&&_grpCollapsed){}
             else if(it.subOf!==null){
               const smChip=(it.status==='ok'&&(it.cat==='rx'||it.cat==='sun'))
                 ?`<div style="padding:3px 0 3px 32px">
