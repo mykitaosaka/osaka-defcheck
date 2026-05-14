@@ -919,14 +919,16 @@ async function gistPush(){
         if(fn.startsWith('inv_')&&fn.endsWith('.json')&&!localIds.has(fn.slice(4,-5)))files[fn]=null;
       }
     }
-    // 写真: Releases（repo設定済み）または Legacy photos.json
-    if(gRepo()){
-      await _pushPhotosToRelease(gRepo(),cur,files);
-      files['settings.json']={content:JSON.stringify({repo:gRepo()})};
-    }else{
-      const photos={};Object.keys(_pc).forEach(k=>{photos[k]=_pc[k];});
-      files['photos.json']={content:JSON.stringify(photos)};
-    }
+    // 写真: 失敗してもインボイスPushをブロックしない
+    try{
+      if(gRepo()){
+        await _pushPhotosToRelease(gRepo(),cur,files);
+        files['settings.json']={content:JSON.stringify({repo:gRepo()})};
+      }else{
+        const photos={};Object.keys(_pc).forEach(k=>{photos[k]=_pc[k];});
+        files['photos.json']={content:JSON.stringify(photos)};
+      }
+    }catch(photoErr){console.warn('Photo push failed (non-fatal):',photoErr.message);}
     let data;
     if(gistId){
       data=await _gFetch('https://api.github.com/gists/'+gistId,{method:'PATCH',body:JSON.stringify({files})});
