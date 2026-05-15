@@ -774,7 +774,7 @@ function exportSumarejiCSV(){
       if(inv.number)invNums.push(inv.number);
       inv.items.forEach(it=>{
         if((it.cat==='rx'||it.cat==='sun')&&it.status==='ok'&&!it.smDone){
-          if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,unitPrice:it.unitPrice||'',posNo:it.subOf||it.no,colorCode:it.colorCode||''});
+          if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||''});
           grouped.get(it.itemNo).count++;
         }
       });
@@ -817,11 +817,11 @@ function exportSumarejiCSVById(id){
     });
     if(!grouped.size){alert('No SUN/RX OK items found.');return;}
     const rows=[];
-    for(const [itemNo,{count,name,unitPrice,posNo,colorCode}] of grouped){
+    for(const [itemNo,{count,name,posNo,colorCode}] of grouped){
       if(count>=getSmQtyAlert()){
         if(!confirm('Item No: '+itemNo+'\nName: '+name+'\nQty: '+count+'\n\nQuantity is 10 or more. Include in CSV?\nOK = Include\nCancel = Skip'))continue;
       }
-      rows.push([itemNo,count,unitPrice,posNo,name,colorCode]);
+      rows.push([itemNo,count,'',posNo,name,colorCode]);
     }
     if(!rows.length){alert('No data to export.');return;}
     if(typeof Encoding==='undefined'){alert('Encoding library not loaded. Please reload the page.');return;}
@@ -1616,9 +1616,9 @@ function parseMykita(text){
   while((m=re.exec(text))!==null){
     const pos=m[1],qty=m[2],unit=m[3],itemNo=m[4];
     const descRaw=m[5].trim();
-    // m[6]=delivery#, m[7]=SUN/RX column (undefined if blank), m[8]=HS-Code, m[9]=unitPrice
+    // m[6]=delivery#, m[7]=SUN/RX column (undefined if blank), m[8]=HS-Code, m[9]=unitPrice (not stored)
     const sunRxCol=(m[7]||'').trim().toUpperCase();
-    const hsCode=m[8],unitPrice=m[9];
+    const hsCode=m[8],unitPrice='';
     // Category: HS code takes priority, then RX/SUN column; blank column → PARTS
     let cat;
     if(hsCode==='90039000')cat='parts';
