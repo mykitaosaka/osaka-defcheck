@@ -136,7 +136,7 @@
   details.raw summary::-webkit-details-marker{display:none}
   .rawbox{background:var(--g50);border:1px solid var(--g200);padding:10px;font-size:10px;font-family:monospace;white-space:pre-wrap;max-height:180px;overflow-y:auto;color:var(--g800);border-radius:3px;margin-top:6px}
   .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end}
-  .sheet{background:var(--w);width:100%;border-radius:12px 12px 0 0;padding:20px 20px max(20px,env(safe-area-inset-bottom));max-height:82vh;overflow-y:auto}
+  .sheet{background:var(--w);width:100%;border-radius:12px 12px 0 0;padding:20px 20px max(20px,env(safe-area-inset-bottom));max-height:82vh;overflow-y:auto;overscroll-behavior:contain}
   .sheet-tit{font-size:11px;letter-spacing:3px;font-weight:600;margin-bottom:16px}
   .close-btn{float:right;background:none;border:none;cursor:pointer;color:var(--g400);font-size:22px;line-height:1}
   .ef{margin-bottom:13px}
@@ -3274,6 +3274,8 @@ function render(){
   </div>`:''}
 
     `;
+  const _hasModal=!!_dispSheet||_pnListOpen||S.showSettings||S.showEmail||!!_recDatePicker||S.showXlsxSel||S.showCsvSel||S.showCsvPicker||S.showLeavePrompt;
+  document.body.style.overflow=_hasModal?'hidden':'';
   if(!S.markup) requestAnimationFrame(()=>{if(_forceScrollTop){_forceScrollTop=false;window.scrollTo(0,0);}else{window.scrollTo(0,_sy);}});
   if(_focId){const el=document.getElementById(_focId);if(el){el.focus();if(_focSS!=null&&el.setSelectionRange)try{el.setSelectionRange(_focSS,_focSE!=null?_focSE:_focSS);}catch(e){}}}
   _applyItemSearch();
