@@ -529,6 +529,36 @@ function savePnListChanges(){
 }
 function toggleDefDetail(no){_defDetailNo=(_defDetailNo===no)?null:no;render();}
 function toggleClDetail(no){_clDetailNo=(_clDetailNo===no)?null:no;render();}
+function reindexOrderNos(){
+  const list=loadList();
+  let updatedItems=0,updatedInvs=0;
+  for(const e of list){
+    try{
+      const d=localStorage.getItem('mykita_dc_inv_'+e.id);
+      if(!d)continue;
+      const inv=JSON.parse(d);
+      let changed=false;
+      for(const it of inv.items){
+        if(it.orderNo)continue;
+        const src=it.name||'';
+        const onm=src.match(/\b(\d{6,7})\b/);
+        if(!onm)continue;
+        it.orderNo=onm[1];
+        const afterIdx=src.indexOf(onm[0])+onm[0].length;
+        it.custRef=src.slice(afterIdx).replace(/[^a-zA-Z0-9\s]/g,'').replace(/\s{2,}/g,' ').trim().toLowerCase();
+        changed=true;
+        updatedItems++;
+      }
+      if(changed){
+        try{localStorage.setItem('mykita_dc_inv_'+e.id,JSON.stringify(inv));}catch(x){}
+        updatedInvs++;
+        _invsDirty=true;
+      }
+    }catch(x){}
+  }
+  if(_invsDirty){const _ld=_listSnap!==null&&_listForSnap(loadList())!==_listSnap;_dirty=_ld||_invsDirty||!!_dispDirtyIds.size;}
+  alert('再インデックス完了\n'+updatedInvs+'件のインボイス・'+updatedItems+'件のアイテムを更新しました\n\n変更を保存するにはPushしてください');
+}
 function buildOrderNoMap(){
   const map={};
   const list=loadList();
@@ -3035,6 +3065,14 @@ function render(){
             </div>
           </div>`;
         })():''}
+        <button style="width:100%;text-align:left;background:none;border:none;border-top:1px solid var(--g100);padding:14px 0 4px;font-size:10px;letter-spacing:1.5px;color:var(--g400);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;margin-top:8px" onclick="_settingsShowHelp=!_settingsShowHelp;render()">
+          <span>アプリの使い方</span><span style="font-size:12px">${_settingsShowHelp?'−':'+'}</span>
+        </button>
+        <div style="border-top:1px solid var(--g100);margin-top:16px;padding-top:14px">
+          <div style="font-size:9px;letter-spacing:2px;color:var(--g400);font-weight:600;margin-bottom:8px">DATA TOOLS</div>
+          <div style="font-size:10px;color:var(--g600);line-height:1.6;margin-bottom:10px">既存インボイスのアイテムにOrder#・CustRefを遡及的に追加します。ディフェクティブ内容・スタンプ番号など全ての入力データは保持されます。</div>
+          <button class="btn out" style="margin-top:0;font-size:9px;letter-spacing:1px" onclick="reindexOrderNos()">Order# / CustRef を再インデックス</button>
+        </div>
         <button style="width:100%;text-align:left;background:none;border:none;border-top:1px solid var(--g100);padding:14px 0 4px;font-size:10px;letter-spacing:1.5px;color:var(--g400);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;margin-top:8px" onclick="_settingsShowHelp=!_settingsShowHelp;render()">
           <span>アプリの使い方</span><span style="font-size:12px">${_settingsShowHelp?'−':'+'}</span>
         </button>
