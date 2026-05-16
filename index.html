@@ -1921,7 +1921,7 @@ function goToStamp(){
   ):[];
   if(defRefItems.length){
     const names=defRefItems.map(i=>'・'+i.name+(i.custRef?' ('+i.custRef+')':'')).join('\n');
-    if(confirm('以下のアイテムのCustRefに「def」が含まれています。\n入庫リストから除外しますか？\n\n'+names+'\n\nOK = 除外する\nキャンセル = そのまま続行')){
+    if(confirm('以下のアイテムのCustRefに「def stock」または「stock claim」が含まれています。\n入庫リストから除外しますか？\n\n'+names+'\n\nOK = 除外する\nキャンセル = そのまま続行')){
       S.invoice.items=S.invoice.items.map(i=>defRefItems.some(d=>d.no===i.no)?{...i,smDone:true}:i);
     }
   }
