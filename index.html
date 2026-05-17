@@ -866,7 +866,7 @@ function exportSumarejiCSV(){
   invNums.forEach(num=>receAll.push(...collectReceItems(num)));
   if(receAll.length){
     const lines=receAll.map(({it,invNumber})=>`・${it.name||it.itemNo} (${invNumber}-${it.no})`).join('\n');
-    if(confirm('以下のRECEアイテムを入庫CSVに追加しますか？\n\n'+lines+'\n\nOK = 追加\nキャンセル = スキップ')){
+    if(confirm('以下のRECEアイテムを入庫CSVに追加しますか？\n\n'+lines+'\n\nOK = 追加\nキャンセル = 追加しない')){
       _appendReceToRows(rows,receAll);
     }
   }
@@ -908,7 +908,7 @@ function exportSumarejiCSVById(id){
     const receItems=collectReceItems(inv.number);
     if(receItems.length){
       const lines=receItems.map(({it,invNumber})=>`・${it.name||it.itemNo} (${invNumber}-${it.no})`).join('\n');
-      if(confirm('以下のRECEアイテムを入庫CSVに追加しますか？\n\n'+lines+'\n\nOK = 追加\nキャンセル = スキップ')){
+      if(confirm('以下のRECEアイテムを入庫CSVに追加しますか？\n\n'+lines+'\n\nOK = 追加\nキャンセル = 追加しない')){
         _appendReceToRows(rows,receItems);
       }
     }
