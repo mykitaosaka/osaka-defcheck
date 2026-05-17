@@ -823,7 +823,7 @@ function openXlsxSel(){
     try{const inv=JSON.parse(d);if(_dispRows(inv).length)ids.add(entry.id);}catch(e){}
   });
   if(!ids.size){alert('Defective itemsのあるアクティブなインボイスがありません');return;}
-  S.xlsxSelIds=ids;S.showXlsxSel=true;render();
+  S.xlsxSelIds=new Set();S.showXlsxSel=true;render();
 }
 function toggleXlsxInv(id){
   if(!S.xlsxSelIds)return;
