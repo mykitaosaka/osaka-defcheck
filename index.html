@@ -3559,10 +3559,10 @@ function render(){
             </div>
           </div>`;
         }).join('')}
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn out" style="margin-top:0;flex:1;font-size:9px;letter-spacing:1.5px" onclick="exportDispCSV()">CSV 出力</button>
-        ${_dsSent?`<button class="btn out" style="margin-top:0;flex:1;font-size:9px;letter-spacing:1.5px" onclick="document.getElementById('msg-input').click()">MSG/EML入力</button>`:''}
-        <button id="disp-done-btn" class="btn blk" style="margin-top:0;flex:2;opacity:${dispDirty?1:0.35}" onclick="saveDispSheet()">DONE</button>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--g100);display:flex;gap:10px">
+        <button class="btn out" style="margin-top:0;flex:1;font-size:10px;letter-spacing:1.5px;padding:14px 8px" onclick="exportDispCSV()">CSV 出力</button>
+        ${_dsSent?`<button class="btn out" style="margin-top:0;flex:1;font-size:10px;letter-spacing:1px;padding:14px 8px;line-height:1.3" onclick="document.getElementById('msg-input').click()">MSG/EML<br>入力</button>`:''}
+        <button id="disp-done-btn" class="btn blk" style="margin-top:0;flex:2;font-size:10px;letter-spacing:2px;padding:14px 8px;opacity:${dispDirty?1:0.35}" onclick="saveDispSheet()">DONE</button>
       </div>
     </div>
   </div>`;
