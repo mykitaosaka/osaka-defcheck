@@ -893,7 +893,7 @@ function exportSumarejiCSV(){
       rows.push([itemNo,count,'',posNo,name,colorCode,'複数回D - 要手入力修正']);
     }
     const _wl=_partsWarnAll.map(it=>`・${it.name||it.itemNo} (pos ${it.subOf||it.no})`).join('\n');
-    alert('⚠️ 以下のアイテムは複数回のディフェクティブにより\n元となるアイテムの判別ができませんでした。\nダウンロード後に手入力で修正してください。\n\n'+_wl);
+    alert('⚠️ 以下のアイテムは複数回のPARTSディフェクティブにより\n元となるアイテムとの照合ができませんでした。\nダウンロード後に手入力で修正してください。\n\n'+_wl);
   }
   if(!rows.length){alert('No data to export.');return;}
   if(typeof Encoding==='undefined'){alert('Encoding library not loaded. Please reload the page.');return;}
@@ -954,7 +954,7 @@ function exportSumarejiCSVById(id){
         rows.push([itemNo,count,'',posNo,name,colorCode,'複数回D - 要手入力修正']);
       }
       const _wl=_partsWarn.map(it=>`・${it.name||it.itemNo} (pos ${it.subOf||it.no})`).join('\n');
-      alert('⚠️ 以下のアイテムは複数回のディフェクティブにより\n元となるアイテムの判別ができませんでした。\nダウンロード後に手入力で修正してください。\n\n'+_wl);
+      alert('⚠️ 以下のアイテムは複数回のPARTSディフェクティブにより\n元となるアイテムとの照合ができませんでした。\nダウンロード後に手入力で修正してください。\n\n'+_wl);
     }
     if(!rows.length){alert('No data to export.');return;}
     if(typeof Encoding==='undefined'){alert('Encoding library not loaded. Please reload the page.');return;}
