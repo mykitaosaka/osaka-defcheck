@@ -3527,21 +3527,28 @@ function render(){
   }
   _defItems.sort((a,b)=>(a.it.pn||'').localeCompare(b.it.pn||''));
   const _q=_pnSearch.trim();
-  const _filtered=_q?_defItems.filter(({it,inv})=>
-    (it.pn||'').startsWith(_q)||
-    (it.name||'').toLowerCase().includes(_q.toLowerCase())||
-    (inv.number||'').includes(_q)
-  ):_defItems;
+  // Chain detection: items whose orderNo matches another defective item's pn are "children"
+  const _allDefPns=new Set(_defItems.map(({it})=>it.pn?.trim()).filter(Boolean));
+  const _isChild=({it})=>!!it.orderNo&&_allDefPns.has(it.orderNo.trim());
+  // child pn → parent pn chain indicator
+  const _chainNext={}; // parent pn → [child pn, ...]
+  _defItems.forEach(({it})=>{if(it.orderNo&&_allDefPns.has(it.orderNo.trim()))(_chainNext[it.orderNo.trim()]||=_chainNext[it.orderNo.trim()]||[]).push(it.pn||'?');});
+  const _filtered=_q
+    ?_defItems.filter(({it,inv})=>(it.pn||'').startsWith(_q)||(it.name||'').toLowerCase().includes(_q.toLowerCase())||(inv.number||'').includes(_q))
+    :_defItems.filter(x=>!_isChild(x));
   const _badge=pn=>{const tag=getDnpSc(pn,_om);if(!tag)return '';const col=tag==='DNP'?'var(--red)':'var(--amber)';return `<span style="font-size:8px;letter-spacing:1px;font-weight:700;color:${col};border:1px solid ${col};border-radius:3px;padding:1px 5px;margin-left:4px">${tag}</span>`;};
   const rows=_filtered.map(({it,inv,invId})=>{
     const key=invId+'|'+it.no;
     const isOpen=_pnItemDetail===key;
     const dispStr=it.disp?it.disp.charAt(0).toUpperCase()+it.disp.slice(1):'—';
     const matches=_om[it.pn]||[];
+    // Build chain label: 258386 → 259325 → ...
+    const _buildChainLabel=(pn,depth=0)=>{if(!pn||depth>8)return '';const next=_chainNext[pn.trim()];if(!next||!next.length)return '';return next.map(n=>`→ ${n}${_buildChainLabel(n,depth+1)}`).join(', ');};
+    const _chainLabel=_buildChainLabel(it.pn);
     return `<div style="border-bottom:1px solid var(--g100)">
       <div style="padding:10px 0;display:flex;align-items:center;gap:8px;cursor:pointer" onclick="togglePnDetail('${key}')">
         <div style="flex:1;min-width:0">
-          <div style="font-size:10px;font-weight:700;font-family:monospace;color:var(--k)">${esc(it.pn)}${_badge(it.pn)}</div>
+          <div style="font-size:10px;font-weight:700;font-family:monospace;color:var(--k)">${esc(it.pn)}${_badge(it.pn)}${_chainLabel?`<span style="font-size:9px;font-weight:400;color:var(--g400);margin-left:4px">${esc(_chainLabel)}</span>`:''}</div>
           <div style="font-size:11px;color:var(--g600);margin-top:2px">${esc(it.name||'—')}${it.colorCode?` <span style="color:var(--g400)">#${it.colorCode}</span>`:''}</div>
           <div style="font-size:9px;color:var(--g400);margin-top:1px">${esc(inv.number||invId)}</div>
         </div>
@@ -3613,7 +3620,7 @@ ${(()=>{
   const{steps,title}=_chain;
   const _defs={
     order:        {icon:'📦',label:'ORDER',          color:'var(--g700)'},
-    delivery:     {icon:'📦',label:'DELIVERY',       color:'var(--g700)'},
+    delivery:     {icon:'📦',label:'REPLACEMENT',     color:'var(--g700)'},
     defective:    {icon:'🔴',label:'DEFECTIVE',      color:'var(--red)'},
     pn:           {icon:'🏷', label:'PN REGISTERED', color:'var(--blue)'},
     ok_receiving: {icon:'✅', label:'OK (RECEIVING)', color:'var(--teal)'},
