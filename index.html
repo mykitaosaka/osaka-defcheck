@@ -678,6 +678,7 @@ function buildOrderNoMap(){
   }
   return map;
 }
+function isDsSbCustRef(custRef){const cr=(custRef||'').toLowerCase();return cr.includes('def stock')||cr.includes('stock claim')||cr.includes('shop breakage');}
 function getDnpSc(pn,orderNoMap){
   if(!pn||!orderNoMap[pn])return null;
   for(const m of orderNoMap[pn]){
@@ -898,6 +899,7 @@ function exportSumarejiCSV(){
   const invNums=[];
   const _pnMap=buildPnMap();
   const _partsWarnAll=[];
+  const _dsSbWarnItems=[];
   S.csvSelIds.forEach(id=>{
     const d=localStorage.getItem('mykita_dc_inv_'+id);
     if(!d)return;
@@ -908,6 +910,8 @@ function exportSumarejiCSV(){
         if((it.cat==='rx'||it.cat==='sun')&&it.status==='ok'&&!it.smDone){
           if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||''});
           grouped.get(it.itemNo).count++;
+          if(isDsSbCustRef(it.custRef)&&!_dsSbWarnItems.some(w=>w.itemNo===it.itemNo))
+            _dsSbWarnItems.push({itemNo:it.itemNo,name:it.name,custRef:it.custRef||''});
         }
       });
       // PARTS OK with PN match
@@ -927,6 +931,14 @@ function exportSumarejiCSV(){
       if(!confirm('Item No: '+itemNo+'\nName: '+name+'\nQty: '+count+'\n\nQuantity is 10 or more. Include in CSV?\nOK = Include\nCancel = Skip'))continue;
     }
     rows.push([itemNo,count,unitPrice,posNo,name,colorCode,'']);
+  }
+  if(_dsSbWarnItems.length){
+    const _wl=_dsSbWarnItems.map(w=>`・${w.name} (${w.custRef})`).join('\n');
+    if(confirm('CustRefに以下のいずれかが含まれているアイテムが存在します。（過去に入庫後デイフェクティブ報告を行ったアイテム）\n・def stock\n・stock claim\n・shop breakage\n\n'+_wl+'\n\n今回入庫させないよう、入庫CSVから除外しますか？\nOK = 除外する\nキャンセル = そのまま続行')){
+      const _excl=new Set(_dsSbWarnItems.map(w=>w.itemNo));
+      const _kept=rows.filter(r=>!_excl.has(r[0]));
+      rows.length=0;_kept.forEach(r=>rows.push(r));
+    }
   }
   // RECE items: defective items from any invoice received into these invoices
   let _receAdded=false;
@@ -974,10 +986,13 @@ function exportSumarejiCSVById(id){
     const grouped=new Map();
     const _pnMap=buildPnMap();
     const _partsWarn=[];
+    const _dsSbWarnItems=[];
     inv.items.forEach(it=>{
       if((it.cat==='rx'||it.cat==='sun')&&it.status==='ok'&&!it.smDone){
         if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,unitPrice:it.unitPrice||'',posNo:it.subOf||it.no,colorCode:it.colorCode||''});
         grouped.get(it.itemNo).count++;
+        if(isDsSbCustRef(it.custRef)&&!_dsSbWarnItems.some(w=>w.itemNo===it.itemNo))
+          _dsSbWarnItems.push({itemNo:it.itemNo,name:it.name,custRef:it.custRef||''});
       }
       if(it.cat==='parts'&&it.status==='ok'&&!it.smDone&&it.orderNo&&_pnMap.has(it.orderNo.trim())){
         _partsWarn.push(it);
@@ -989,6 +1004,14 @@ function exportSumarejiCSVById(id){
         if(!confirm('Item No: '+itemNo+'\nName: '+name+'\nQty: '+count+'\n\nQuantity is 10 or more. Include in CSV?\nOK = Include\nCancel = Skip'))continue;
       }
       rows.push([itemNo,count,'',posNo,name,colorCode,'']);
+    }
+    if(_dsSbWarnItems.length){
+      const _wl=_dsSbWarnItems.map(w=>`・${w.name} (${w.custRef})`).join('\n');
+      if(confirm('CustRefに以下のいずれかが含まれているアイテムが存在します。（過去に入庫後デイフェクティブ報告を行ったアイテム）\n・def stock\n・stock claim\n・shop breakage\n\n'+_wl+'\n\n今回入庫させないよう、入庫CSVから除外しますか？\nOK = 除外する\nキャンセル = そのまま続行')){
+        const _excl=new Set(_dsSbWarnItems.map(w=>w.itemNo));
+        const _kept=rows.filter(r=>!_excl.has(r[0]));
+        rows.length=0;_kept.forEach(r=>rows.push(r));
+      }
     }
     // RECE items: defective items from any invoice received into this invoice
     let _receAdded=false;
