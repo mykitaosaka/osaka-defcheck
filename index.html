@@ -855,16 +855,22 @@ function openCsvSel(){
     try{const inv=JSON.parse(d);const _hasOk=inv.items.some(it=>(it.cat==='rx'||it.cat==='sun')&&it.status==='ok'&&!it.smDone);const _hasRece=inv.number&&collectReceItems(inv.number).length>0;if(_hasOk||_hasRece)ids.add(entry.id);}catch(e){}
   });
   if(!ids.size){alert('SUN/RXのOKまたはRECEアイテムがあるアクティブなインボイスがありません');return;}
-  S.csvSelIds=ids;S.showCsvSel=true;render();
+  S.csvSelIds=new Set();S.showCsvSel=true;render();
 }
 function toggleCsvInv(id){
   if(!S.csvSelIds)return;
   S.csvSelIds.has(id)?S.csvSelIds.delete(id):S.csvSelIds.add(id);render();
 }
-function toggleAllCsvInv(ids){
+function toggleAllCsvInv(){
   if(!S.csvSelIds)return;
-  const allSel=ids.every(id=>S.csvSelIds.has(id));
-  ids.forEach(id=>allSel?S.csvSelIds.delete(id):S.csvSelIds.add(id));render();
+  const list=loadList().filter(e=>!e.archived);
+  const allIds=[];
+  list.forEach(entry=>{
+    const d=localStorage.getItem('mykita_dc_inv_'+entry.id);if(!d)return;
+    try{const inv=JSON.parse(d);const cnt=inv.items.filter(it=>(it.cat==='rx'||it.cat==='sun')&&it.status==='ok'&&!it.smDone).length;if(cnt)allIds.push(entry.id);}catch(e){}
+  });
+  const allSel=allIds.every(id=>S.csvSelIds.has(id));
+  allIds.forEach(id=>allSel?S.csvSelIds.delete(id):S.csvSelIds.add(id));render();
 }
 function collectReceItems(targetInvNumber){
   const list=loadList();
@@ -3209,7 +3215,7 @@ function render(){
         <div class="sheet-tit">SMAREGI RECEIVING CSV — Select Invoices<button class="close-btn" onclick="S.showCsvSel=false;S.csvSelIds=null;render()">×</button></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
           <span style="font-size:10px;color:var(--g600)">${selCnt} / ${candidates.length} selected</span>
-          <button onclick="toggleAllCsvInv(${JSON.stringify(allIds)})" style="font-size:9px;letter-spacing:1px;padding:3px 10px;border:1px solid var(--g200);border-radius:3px;background:none;cursor:pointer;color:var(--g600);font-family:inherit">${allSel?'DESELECT ALL':'SELECT ALL'}</button>
+          <button onclick="toggleAllCsvInv()" style="font-size:9px;letter-spacing:1px;padding:3px 10px;border:1px solid var(--g200);border-radius:3px;background:none;cursor:pointer;color:var(--g600);font-family:inherit">${allSel?'DESELECT ALL':'SELECT ALL'}</button>
         </div>
         <div style="display:flex;flex-direction:column;gap:1px;margin-bottom:16px">
           ${candidates.map(({entry,cnt})=>{
