@@ -1529,6 +1529,14 @@ function _applyItemSearch(){
     el.style.display=(!words.length||words.every(w=>name.includes(w)))?'':'none';
   });
 }
+function _applyPnNameSearch(){
+  const q=(_pnNameSearch||'').toLowerCase().trim();
+  const words=q?q.split(/\s+/).filter(Boolean):[];
+  document.querySelectorAll('[data-pn-name]').forEach(el=>{
+    const name=(el.dataset.pnName||'').toLowerCase();
+    el.style.display=(!words.length||words.every(w=>name.includes(w)))?'':'none';
+  });
+}
 function _onItemSearch(val){S.itemSearch=val;_applyItemSearch();}
 function photoSrc(v){
   if(!v)return '';
@@ -3587,18 +3595,16 @@ function render(){
   }
   _defItems.sort((a,b)=>(a.it.pn||'').localeCompare(b.it.pn||''));
   const _q=_pnSearch.trim();
-  const _nq=_pnNameSearch.trim().toLowerCase();
   // Chain detection: items whose orderNo matches another defective item's pn are "children"
   const _allDefPns=new Set(_defItems.map(({it})=>it.pn?.trim()).filter(Boolean));
   const _isChild=({it})=>!!it.orderNo&&_allDefPns.has(it.orderNo.trim());
   // child pn → parent pn chain indicator
   const _chainNext={}; // parent pn → [child pn, ...]
   _defItems.forEach(({it})=>{if(it.orderNo&&_allDefPns.has(it.orderNo.trim()))(_chainNext[it.orderNo.trim()]||=_chainNext[it.orderNo.trim()]||[]).push(it.pn||'?');});
-  const _hasFilter=_q||_nq||_pnInvFilter||_pnMatchFilter!=='all';
+  const _hasFilter=_q||_pnInvFilter||_pnMatchFilter!=='all';
   const _filtered=_hasFilter
     ?_defItems.filter(({it,inv})=>{
         if(_q&&!(it.pn||'').startsWith(_q))return false;
-        if(_nq&&!(it.name||'').toLowerCase().includes(_nq))return false;
         if(_pnInvFilter&&(inv.number||'')!==_pnInvFilter)return false;
         if(_pnMatchFilter==='matched'&&!(_om[it.pn]||[]).length)return false;
         if(_pnMatchFilter==='unmatched'&&(_om[it.pn]||[]).length)return false;
@@ -3616,7 +3622,7 @@ function render(){
     // Build chain label: 258386 → 259325 → ...
     const _buildChainLabel=(pn,depth=0)=>{if(!pn||depth>8)return '';const next=_chainNext[pn.trim()];if(!next||!next.length)return '';return next.map(n=>`→ ${n}${_buildChainLabel(n,depth+1)}`).join(', ');};
     const _chainLabel=_buildChainLabel(it.pn);
-    return `<div style="border-bottom:1px solid var(--g100)">
+    return `<div data-pn-name="${esc(it.name||'')}" style="border-bottom:1px solid var(--g100)">
       <div style="padding:10px 0;display:flex;align-items:center;gap:8px;cursor:pointer" onclick="togglePnDetail('${key}')">
         <div style="flex:1;min-width:0">
           <div style="font-size:10px;font-weight:700;font-family:monospace;color:var(--k)">${esc(it.pn)}${_badge(it.pn)}${_chainLabel?`<span style="font-size:9px;font-weight:400;color:var(--g400);margin-left:4px">${esc(_chainLabel)}</span>`:''}</div>
@@ -3655,9 +3661,9 @@ function render(){
       </div>
       <div style="position:relative;margin-bottom:8px">
         <input id="pn-name-search-inp" type="text" value="${esc(_pnNameSearch)}" placeholder="アイテム名"
-          oninput="_pnNameSearch=this.value;requestAnimationFrame(render)"
+          oninput="_pnNameSearch=this.value;_applyPnNameSearch()"
           style="width:100%;padding:8px 36px 8px 12px;border:1px solid var(--g200);border-radius:4px;font-size:13px;font-family:inherit;background:var(--g50);outline:none;color:var(--g800);box-sizing:border-box">
-        ${_pnNameSearch?`<button onclick="_pnNameSearch='';render()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--g400);font-size:16px;line-height:1;padding:2px">×</button>`:''}
+        ${_pnNameSearch?`<button onclick="_pnNameSearch='';_applyPnNameSearch()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--g400);font-size:16px;line-height:1;padding:2px">×</button>`:''}
       </div>
       <div style="display:flex;gap:6px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
         <select onchange="_pnInvFilter=this.value;render()" style="flex:1;min-width:0;padding:6px 8px;border:1px solid var(--g200);border-radius:4px;font-size:11px;font-family:inherit;background:var(--w);color:var(--g800);outline:none">
@@ -3746,7 +3752,7 @@ ${(()=>{
   document.body.style.overflow=_hasModal?'hidden':'';
   if(!S.markup) requestAnimationFrame(()=>{if(_forceScrollTop){_forceScrollTop=false;window.scrollTo(0,0);}else{window.scrollTo(0,_sy);}});
   if(_focId){const el=document.getElementById(_focId);if(el){el.focus();if(_focSS!=null&&el.setSelectionRange)try{el.setSelectionRange(_focSS,_focSE!=null?_focSE:_focSS);}catch(e){}}}
-  _applyItemSearch();
+  _applyItemSearch();_applyPnNameSearch();
   const fab=document.getElementById('scroll-fab');
   if(fab){
     fab.style.display=(S.screen==='checklist'&&!S.markup&&!S.viewPhoto&&!S.showEmail)?'flex':'none';
