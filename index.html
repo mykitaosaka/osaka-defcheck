@@ -307,6 +307,8 @@
   @keyframes guide-pull-dot{0%,8%{left:calc(100% - 8px);opacity:0}15%{left:calc(100% - 8px);opacity:1}72%{left:0;opacity:1}82%,100%{left:0;opacity:0}}
   @keyframes guide-upload-gray{0%,35%{opacity:1}50%,80%{opacity:0}92%,100%{opacity:1}}
   @keyframes guide-upload-red{0%,35%{opacity:0}50%,80%{opacity:1}92%,100%{opacity:0}}
+  @keyframes badge-matched{0%,38%{opacity:1}50%,88%{opacity:0}100%{opacity:1}}
+  @keyframes badge-all-done{0%,38%{opacity:0}50%,88%{opacity:1}100%{opacity:0}}
   .proc-step{opacity:0;animation:proc-step-in .25s ease forwards}
   .proc-conn{width:2px;height:28px;background:var(--g200);margin:2px 13px;transform-origin:top;transform:scaleY(0);animation:proc-line-in .2s ease forwards}
   .inv-card{border:1px solid var(--g200);padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;background:var(--w);position:relative;z-index:1}
@@ -3706,7 +3708,7 @@ function render(){
     :_defItems.filter(x=>!_isChild(x));
   // Unique invoice numbers for filter dropdown
   const _invNums=[...new Set(_defItems.map(({inv})=>inv.number||'').filter(Boolean))].sort();
-  const _badge=pn=>{const tag=getDnpSc(pn,_om);if(!tag)return '';return `<span class="pn-badge" style="margin-left:4px">Matched</span>`;};
+  const _badge=(pn,allDone=false)=>{const tag=getDnpSc(pn,_om);if(!tag)return '';if(allDone){return `<span style="position:relative;display:inline-flex;margin-left:4px;vertical-align:middle"><span class="pn-badge" style="animation:badge-matched 3s ease-in-out infinite">Matched</span><span class="pn-badge" style="position:absolute;left:0;white-space:nowrap;color:var(--teal);border-color:var(--teal);animation:badge-all-done 3s ease-in-out infinite">ALL DONE</span></span>`;}return `<span class="pn-badge" style="margin-left:4px">Matched</span>`;};
   const rows=_filtered.map(({it,inv,invId})=>{
     const key=invId+'|'+it.no;
     const isOpen=_pnItemDetail===key;
@@ -3715,10 +3717,12 @@ function render(){
     // Build chain label: 258386 → 259325 → ...
     const _buildChainLabel=(pn,depth=0)=>{if(!pn||depth>8)return '';const next=_chainNext[pn.trim()];if(!next||!next.length)return '';return next.map(n=>`→ ${n}${_buildChainLabel(n,depth+1)}`).join(', ');};
     const _chainLabel=_buildChainLabel(it.pn);
+    const _proc=buildProcessChain(invId,it.no);
+    const _allDone=_proc&&_proc.steps.length>0&&['ok','ok_receiving'].includes(_proc.steps[_proc.steps.length-1].type);
     return `<div data-pn-name="${esc(it.name||'')}" style="border-bottom:1px solid var(--g100)">
       <div style="padding:10px 0;display:flex;align-items:center;gap:8px;cursor:pointer" onclick="togglePnDetail('${key}')">
         <div style="flex:1;min-width:0">
-          <div style="font-size:10px;font-weight:700;font-family:monospace;color:var(--k)">${esc(it.pn)}${_badge(it.pn)}${_chainLabel?`<span style="font-size:9px;font-weight:400;color:var(--g400);margin-left:4px">${esc(_chainLabel)}</span>`:''}</div>
+          <div style="font-size:10px;font-weight:700;font-family:monospace;color:var(--k)">${esc(it.pn)}${_badge(it.pn,_allDone)}${_chainLabel?`<span style="font-size:9px;font-weight:400;color:var(--g400);margin-left:4px">${esc(_chainLabel)}</span>`:''}</div>
           <div style="font-size:11px;color:var(--g600);margin-top:2px">${esc(it.name||'—')}${it.colorCode?` <span style="color:var(--g400)">#${it.colorCode}</span>`:''}</div>
           <div style="font-size:9px;color:var(--g400);margin-top:1px">${esc(inv.number||invId)}</div>
         </div>
