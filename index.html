@@ -196,67 +196,6 @@
   .def-inline-edit{font-size:9px;letter-spacing:1.5px;color:var(--redM);flex-shrink:0;padding:2px 6px;border:1px solid var(--redM);border-radius:3px;background:none;cursor:pointer;font-family:inherit;font-weight:500}
   .def-inline-edit:active{background:var(--redL)}
   .def-inline-empty{font-size:10px;color:var(--redM);font-style:italic}
-  /* PHOTOS */
-  .photo-section{margin-top:10px;margin-left:32px}
-  .photo-section-lbl{font-size:9px;letter-spacing:2px;color:var(--red);font-weight:600;margin-bottom:7px}
-  .photo-strip{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-left:32px;margin-top:6px}
-  .photo-section .photo-strip{margin-left:0}
-  .photo-thumb-wrap{position:relative;flex-shrink:0}
-  .photo-thumb{width:64px;height:64px;object-fit:cover;border-radius:4px;border:1px solid var(--redM);cursor:pointer;display:block}
-  .photo-del{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:var(--red);color:#fff;border:none;cursor:pointer;font-size:11px;line-height:18px;text-align:center;padding:0}
-  .photo-add-btn{width:48px;height:64px;border:1px dashed var(--redM);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--redM);cursor:pointer;flex-shrink:0}
-  .photo-add-btn:active{background:var(--redL)}
-  /* MARKUP EDITOR */
-  .mkup{position:fixed;inset:0;z-index:400;background:#111;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
-  .mkup-toolbar{display:flex;align-items:center;gap:0;padding:10px 16px;background:#1a1a1a;flex-shrink:0}
-  .mkup-title{flex:1;font-size:11px;letter-spacing:3px;color:#fff;text-align:center}
-  .mkup-tbtn{background:none;border:none;cursor:pointer;color:#888;font-size:22px;padding:6px 10px;border-radius:6px;font-family:inherit;line-height:1}
-  .mkup-tbtn:active{background:#333}
-  .mkup-canvas-wrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-  .mkup-canvas-wrap canvas{max-width:100%;max-height:100%;touch-action:none}
-  .mkup-label-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#222;flex-shrink:0;border-top:1px solid #333}
-  .mkup-label-lbl{font-size:9px;letter-spacing:2px;color:#666;flex-shrink:0}
-  .mkup-label-inp{flex:1;background:#1a1a1a;border:1.5px solid #444;color:#ef5350;font-size:16px;font-weight:600;padding:8px 12px;border-radius:6px;outline:none;font-family:inherit}
-  .mkup-label-inp:focus{border-color:#ef5350}
-  .mkup-actions{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px max(12px,env(safe-area-inset-bottom));background:#1a1a1a;flex-shrink:0}
-  .mkup-cancel{padding:10px 20px;border-radius:6px;border:1.5px solid #444;background:none;color:#aaa;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500}
-  .mkup-cancel:active{opacity:.7}
-  .mkup-done{padding:10px 32px;border-radius:6px;border:none;background:#fff;color:#000;font-size:11px;letter-spacing:2px;font-weight:600;cursor:pointer;font-family:inherit}
-  .mkup-done:active{opacity:.8}
-  .mkup-hint{text-align:center;font-size:10px;color:#444;letter-spacing:1px;padding:6px 16px 0;background:#1a1a1a;flex-shrink:0}
-  .mkup-reedit-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;overflow:hidden}
-  .mkup-reedit-ttl{font-size:10px;letter-spacing:2px;color:#888}
-  .mkup-reedit-img{max-width:100%;max-height:52vh;object-fit:contain;border-radius:4px;border:1px solid #333}
-  .mkup-preview-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;overflow:hidden}
-  .mkup-preview-lbl{font-size:10px;letter-spacing:2px;color:#888}
-  .mkup-preview-img{max-width:100%;max-height:56vh;object-fit:contain;border-radius:4px;border:1px solid #333}
-  .mkup-reedit-hint{font-size:12px;color:#aaa;text-align:center}
-  /* PHOTO VIEWER */
-  .photo-viewer{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .photo-viewer img{max-width:100%;max-height:80vh;object-fit:contain;border-radius:4px}
-  .photo-viewer-close{position:absolute;top:max(16px,env(safe-area-inset-top));right:20px;background:none;border:none;color:#fff;font-size:28px;cursor:pointer;line-height:1}
-  .photo-viewer-del{margin-top:16px;padding:10px 24px;background:var(--red);color:#fff;border:none;border-radius:4px;font-size:11px;letter-spacing:2px;cursor:pointer;font-family:inherit;font-weight:500}
-  @media(prefers-color-scheme:dark){
-    .photo-thumb{border-color:var(--redM)!important}
-    .photo-add-btn{border-color:var(--redM)!important;color:var(--redM)!important}
-  }
-  /* MARKUP EDITOR */
-  .mu{position:fixed;inset:0;background:#111;z-index:300;display:flex;flex-direction:column}
-  .mu-toolbar{display:flex;align-items:center;gap:8px;padding:max(14px,env(safe-area-inset-top)) 16px 10px;background:#1a1a1a;flex-shrink:0}
-  .mu-canvas-wrap{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
-  .mu-canvas{touch-action:none;display:block;max-width:100%;max-height:100%}
-  .mu-btn{padding:8px 14px;border-radius:4px;border:1px solid #444;background:#2a2a2a;color:#fff;font-size:10px;letter-spacing:2px;cursor:pointer;font-family:inherit;font-weight:500;flex-shrink:0}
-  .mu-btn.active{background:var(--red);border-color:var(--red)}
-  .mu-btn.done{background:#fff;color:#000;border-color:#fff;margin-left:auto}
-  .mu-btn:active{opacity:.7}
-  .mu-undo{font-size:16px;padding:8px 10px}
-  .mu-text-overlay{position:absolute;display:flex;flex-direction:column;align-items:flex-start;gap:6px;z-index:10}
-  .mu-text-inp{background:rgba(0,0,0,.7);border:1px solid var(--red);color:var(--red);font-size:15px;font-weight:600;padding:6px 10px;border-radius:4px;outline:none;font-family:inherit;min-width:120px}
-  .mu-text-ok{padding:6px 14px;background:var(--red);color:#fff;border:none;border-radius:4px;font-size:10px;letter-spacing:2px;cursor:pointer;font-family:inherit}
-  .mu-label-bar{display:flex;align-items:center;gap:8px;padding:8px 16px;background:#1a1a1a;flex-shrink:0;border-top:1px solid #333}
-  .mu-label-bar label{font-size:9px;letter-spacing:2px;color:#666;flex-shrink:0}
-  .mu-label-inp{flex:1;background:#2a2a2a;border:1px solid #444;color:#ef5350;font-size:13px;font-weight:600;padding:7px 10px;border-radius:4px;outline:none;font-family:inherit}
-  .mu-label-inp:focus{border-color:#ef5350}
   /* STAMP SCREEN */
   .stamp-card{margin:0 20px 12px;border:1px solid var(--g200);border-radius:6px;padding:14px 16px}
   .stamp-card-hd{display:flex;align-items:baseline;gap:8px;margin-bottom:10px}
@@ -343,7 +282,6 @@
 </head>
 <body>
 <div id="app"></div>
-<input type="file" id="gallery-input" accept="image/*" style="display:none" onchange="onGalleryChange(this)">
 <input type="file" id="reparse-input" accept=".pdf" style="display:none" onchange="handleReparseByNumber(this.files[0]);this.value=''">
 <input type="file" id="msg-input" accept=".msg,.eml" style="display:none" onchange="handleMsgUpload(this.files[0]);this.value=''">
 <button id="scroll-fab" class="fab" style="display:none" onclick="fabTap()">↓</button>
@@ -359,7 +297,7 @@ const STATS=['pending','ok','defective','warranty'];
 const CYCLE_STATS=['pending','defective','ok'];
 const SLBL={pending:'—',ok:'OK',defective:'D',warranty:'W'};
 const SCLS={pending:'',ok:'ok',defective:'def',warranty:'war'};
-let S={screen:'home',loading:false,rawText:'',parseErr:'',invoiceId:null,invoice:null,showEmail:false,emailTo:'',emailSubj:'',emailBody:'',emailPhotoKeys:[],emailSelKeys:null,filter:'ALL',tagFilter:[],pickerOpen:{},partDetailOpen:{},grpCollapsed:{},viewPhoto:null,markup:null,showArchive:false,showSettings:false,showXlsxSel:false,xlsxSelIds:null,showCsvSel:false,csvSelIds:null,showCsvPicker:false,csvPickerId:null,showLeavePrompt:false,homeSort:'created',homeSortDir:'desc',pushing:false,homeSearch:'',itemSearch:''};
+let S={screen:'home',loading:false,rawText:'',parseErr:'',invoiceId:null,invoice:null,showEmail:false,emailTo:'',emailSubj:'',emailBody:'',filter:'ALL',tagFilter:[],pickerOpen:{},partDetailOpen:{},grpCollapsed:{},showArchive:false,showSettings:false,showXlsxSel:false,xlsxSelIds:null,showCsvSel:false,csvSelIds:null,showCsvPicker:false,csvPickerId:null,showLeavePrompt:false,homeSort:'created',homeSortDir:'desc',pushing:false,homeSearch:'',itemSearch:''};
 let _sw={state:null,openId:null,openDir:null,moved:false};
 let _dispSheet=null,_dispOrigDisp={},_dispOrigPn={},_dispOrigReceiving={},_dispOrigRecDate={},_dispOrigRemark={};
 let _recDatePicker=null;
@@ -1271,32 +1209,7 @@ async function _gistDoPull(){
         const c=await getC(data.files['settings.json']);
         if(c){try{const st=JSON.parse(c);if(st.repo&&!gRepo())localStorage.setItem(GK_REPO,st.repo);}catch(e){}}
       }
-      if(data.files['photo_index.json']){
-        const c=await getC(data.files['photo_index.json']);
-        if(c){
-          const idx=JSON.parse(c);_photoIdx=idx;
-          if(gRepo()){
-            const repo=gRepo();
-            const needed=new Set();
-            for(const fn of Object.keys(_invLoaded)){
-              try{const inv=JSON.parse(_invLoaded[fn]);inv.items.forEach(it=>{(it.photos||[]).concat(it.origPhotos||[]).forEach(k=>{if(k&&!k.startsWith('data:'))needed.add(k);});});}catch(e){}
-            }
-            (async()=>{
-              for(const key of needed){
-                if(!_pc[key]&&idx[key]){
-                  try{const url=await _ghDownloadAsset(repo,idx[key]);idbPut(key,url);_schedulePhotoRender();}
-                  catch(e){console.warn('Photo download failed:',key,e.message);}
-                }
-              }
-            })();
-          }
-        }else _skipped.push('photos');
-      }else if(data.files['photos.json']){
-        const c=await getC(data.files['photos.json']);
-        if(c){const ph=JSON.parse(c);for(const[k,v]of Object.entries(ph))idbPut(k,v);}
-        else _skipped.push('photos');
-      }
-    }catch(pe){console.warn('Photo sync error (non-fatal):',pe);}
+    }catch(pe){console.warn('Pull error (non-fatal):',pe);}
     _markClean();
   }finally{
     _gistPulling=false;
@@ -1314,10 +1227,8 @@ async function gistPush(){
   try{
     const list=loadList();
     const gistId=gId();
-    // Step1: インボイスファイルを構築（写真データを除外）
     const invFiles={};
-    const _stripDataUrls=arr=>(arr||[]).filter(p=>p&&!p.startsWith('data:'));
-    list.forEach(e=>{const d=localStorage.getItem('mykita_dc_inv_'+e.id);if(d){try{const inv=JSON.parse(d);const clean={...inv,items:inv.items.map(it=>({...it,photos:_stripDataUrls(it.photos),origPhotos:_stripDataUrls(it.origPhotos)}))};invFiles['inv_'+e.id+'.json']={content:JSON.stringify(clean)};}catch(x){invFiles['inv_'+e.id+'.json']={content:d};}}});
+    list.forEach(e=>{const d=localStorage.getItem('mykita_dc_inv_'+e.id);if(d)invFiles['inv_'+e.id+'.json']={content:d};});
     // Step2: リマートのlist.jsonと合算（他デバイスのインボイスを消さない）—失敗しても続行
     let mergedList=[...list];
     let _cur=null;
@@ -1346,23 +1257,8 @@ async function gistPush(){
     const pushedInvCount=Object.keys(invFiles).filter(k=>k.startsWith('inv_')).length;
     _syncMsg='Push完了 (Gist: '+(finalId?finalId.slice(0,8)+'…':'new')+' / リスト: '+mergedList.length+'件 / invファイル: '+pushedInvCount+'個)';
     alert(_syncMsg);
-    // Step4: 写真同期は完全に分離して非同期実行（インボイス同期とは独立）
-    _pushPhotosSilent(finalId,_cur).catch(e=>console.warn('Photo sync (bg) failed:',e.message));
   }catch(e){_syncSt='err';_syncMsg='Push失敗: '+e.message;alert('Push失敗: '+e.message);}
   S.pushing=false;render();setTimeout(()=>{if(_syncSt==='ok'){_syncSt=null;render();}},3000);
-}
-async function _pushPhotosSilent(gistId,cur){
-  const photoFiles={};
-  if(gRepo()){
-    await _pushPhotosToRelease(gRepo(),cur,photoFiles);
-    photoFiles['settings.json']={content:JSON.stringify({repo:gRepo()})};
-  }else{
-    const photos={};Object.keys(_pc).forEach(k=>{photos[k]=_pc[k];});
-    if(!Object.keys(photos).length)return;
-    photoFiles['photos.json']={content:JSON.stringify(photos)};
-  }
-  if(Object.keys(photoFiles).length)
-    await _gFetch('https://api.github.com/gists/'+gistId,{method:'PATCH',body:JSON.stringify({files:photoFiles})});
 }
 async function gistPull(){
   if(!gPat()||!gId()){alert('TokenとGist IDを設定してください');return;}
@@ -1439,63 +1335,6 @@ function tryCloseSettings(){
   _credsDraft=null;_msDraft=null;_settingsShowCreds=false;_settingsShowMs=false;_settingsShowCsvFields=false;S.showSettings=false;render();
 }
 
-/* ── GitHub Releases photo helpers ── */
-function _dataURLtoBlob(d){const[h,b]=d.split(',');const m=h.match(/:(.*?);/)[1];const s=atob(b);const a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return new Blob([a],{type:m});}
-let _ghRelId=null;
-async function _ghGetOrCreateRelease(repo){
-  if(_ghRelId)return _ghRelId;
-  const rels=await _gFetch('https://api.github.com/repos/'+repo+'/releases');
-  const rel=rels.find(r=>r.tag_name==='photos');
-  if(rel){_ghRelId=rel.id;return rel.id;}
-  const created=await _gFetch('https://api.github.com/repos/'+repo+'/releases',{method:'POST',body:JSON.stringify({tag_name:'photos',name:'Photo Storage',body:'MYKITA DC photo storage',draft:false,prerelease:true})});
-  _ghRelId=created.id;return created.id;
-}
-async function _ghUploadAsset(repo,releaseId,name,blob){
-  const pat=gPat();let res;
-  try{res=await fetch('https://uploads.github.com/repos/'+repo+'/releases/'+releaseId+'/assets?name='+encodeURIComponent(name)+'.jpg',{method:'POST',headers:{'Authorization':'token '+pat,'Content-Type':'image/jpeg'},body:blob});}
-  catch(fe){throw new Error('写真アップロード失敗: '+fe.message);}
-  if(!res.ok){let m='HTTP '+res.status;try{const e=await res.clone().json();if(e.message)m=e.message;}catch(x){}throw new Error('写真アップロード失敗: '+m);}
-  return (await res.json()).id;
-}
-async function _ghDownloadAsset(repo,assetId){
-  const pat=gPat();let res;
-  try{res=await fetch('https://api.github.com/repos/'+repo+'/releases/assets/'+assetId,{headers:{'Authorization':'token '+pat,'Accept':'application/octet-stream'}});}
-  catch(fe){throw new Error('写真ダウンロード失敗: '+fe.message);}
-  if(!res.ok)throw new Error('写真ダウンロード失敗: HTTP '+res.status);
-  const blob=await res.blob();
-  return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(blob);});
-}
-async function _ghDeleteAsset(repo,assetId){
-  const pat=gPat();
-  try{await fetch('https://api.github.com/repos/'+repo+'/releases/assets/'+assetId,{method:'DELETE',headers:{'Authorization':'token '+pat}});}
-  catch(e){console.warn('asset delete failed:',e);}
-}
-function _deletePhoto(key){
-  idbDel(key);
-  if(gRepo()&&_photoIdx&&_photoIdx[key]){
-    _ghDeleteAsset(gRepo(),_photoIdx[key]).catch(()=>{});
-    delete _photoIdx[key];
-  }
-}
-async function _pushPhotosToRelease(repo,cur,files){
-  let existingIdx=_photoIdx||{};
-  if(!_photoIdx&&cur&&cur.files['photo_index.json']&&!cur.files['photo_index.json'].truncated){
-    try{existingIdx=JSON.parse(cur.files['photo_index.json'].content||'{}');}catch(e){}
-  }
-  const relId=await _ghGetOrCreateRelease(repo);
-  const newIdx={...existingIdx};
-  for(const[key,dataURL]of Object.entries(_pc)){
-    if(!existingIdx[key]){
-      try{newIdx[key]=await _ghUploadAsset(repo,relId,key,_dataURLtoBlob(dataURL));}
-      catch(e){console.warn('Photo upload skipped:',key,e.message);}
-    }
-  }
-  for(const key of Object.keys(existingIdx)){
-    if(!_pc[key]){_ghDeleteAsset(repo,existingIdx[key]).catch(()=>{});delete newIdx[key];}
-  }
-  _photoIdx=newIdx;
-  files['photo_index.json']={content:JSON.stringify(newIdx)};
-}
 
 function genId(){return 'inv_'+Date.now()+'_'+Math.random().toString(36).slice(2,5);}
 function save(){
@@ -1529,34 +1368,6 @@ function setDisp(no,val){
   save();render();
 }
 
-/* ── IndexedDB photo store ── */
-const _pc={};          // in-memory photo cache {key→dataURL}
-let _photoIdx=null;    // {photoKey→releaseAssetId} loaded from photo_index.json
-let _idb=null;
-function _openIdb(){
-  if(_idb)return Promise.resolve(_idb);
-  return new Promise((res,rej)=>{
-    const r=indexedDB.open('osaka_dc_photos',1);
-    r.onupgradeneeded=e=>e.target.result.createObjectStore('p');
-    r.onsuccess=e=>{_idb=e.target.result;res(_idb);};
-    r.onerror=e=>rej(e.target.error);
-  });
-}
-function idbPut(key,val){_pc[key]=val;_openIdb().then(db=>{const tx=db.transaction('p','readwrite');tx.objectStore('p').put(val,key);});}
-function idbDel(key){delete _pc[key];_openIdb().then(db=>{const tx=db.transaction('p','readwrite');tx.objectStore('p').delete(key);});}
-function idbLoadAll(){
-  return _openIdb().then(db=>new Promise((res,rej)=>{
-    const tx=db.transaction('p','readonly');
-    const r=tx.objectStore('p').openCursor();
-    r.onsuccess=e=>{const c=e.target.result;if(c){_pc[c.key]=c.value;c.continue();}else res();};
-    r.onerror=e=>rej(e.target.error);
-  }));
-}
-function photoKey(){return 'pk_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);}
-function idbGet(key){return _openIdb().then(db=>new Promise((res,rej)=>{const tx=db.transaction('p','readonly');const r=tx.objectStore('p').get(key);r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e.target.error);}));}
-async function resolvePhotoAsync(key){if(!key)return null;if(key.startsWith('data:'))return key;if(_pc[key])return _pc[key];const v=await idbGet(key).catch(()=>null);if(v)_pc[key]=v;return v||null;}
-let _photoRenderPending=false;
-function _schedulePhotoRender(){if(_photoRenderPending)return;_photoRenderPending=true;setTimeout(()=>{_photoRenderPending=false;render();},200);}
 function _applyItemSearch(){
   const q=(S.itemSearch||'').toLowerCase().trim();
   const words=q?q.split(/\s+/).filter(Boolean):[];
@@ -1574,18 +1385,6 @@ function _applyPnNameSearch(){
   });
 }
 function _onItemSearch(val){S.itemSearch=val;_applyItemSearch();}
-function photoSrc(v){
-  if(!v)return '';
-  if(v.startsWith('data:'))return v;
-  if(_pc[v])return _pc[v];
-  resolvePhotoAsync(v).then(url=>{
-    if(url){_schedulePhotoRender();}
-    else if(_photoIdx&&_photoIdx[v]&&gRepo()){
-      _ghDownloadAsset(gRepo(),_photoIdx[v]).then(dataURL=>{idbPut(v,dataURL);_schedulePhotoRender();}).catch(()=>{});
-    }
-  });
-  return '';
-}
 function newDefect(){return {part:'',partOther:null,partDetail:null,side:'',cond:[],condOther:null};}
 function togglePartDetailOpen(no,idx){
   const k=no+'_'+idx;
@@ -1653,8 +1452,6 @@ function archiveInvoice(id){
 function deleteInvoice(id){
   _sw.openId=null;
   if(!confirm('このインボイスを削除しますか？\nこの操作は取り消せません。'))return;
-  // 写真をIndexedDB・メモリキャッシュから削除
-  try{const d=localStorage.getItem('mykita_dc_inv_'+id);if(d){const inv=JSON.parse(d);inv.items.forEach(it=>(it.photos||[]).forEach(k=>{if(k&&!k.startsWith('data:'))_deletePhoto(k);}));}}catch(e){}
   const list=loadList().filter(e=>e.id!==id);
   saveList(list);
   localStorage.removeItem('mykita_dc_inv_'+id);
@@ -1798,7 +1595,7 @@ async function handleReparseByNumber(f){
     if(!d){alert('インボイスデータが見つかりません');return;}
     const existing=JSON.parse(d);
     // Merge: update parsed fields, preserve user-entered data
-    const KEEP=['status','remark','defects','stampNo','photos','origPhotos','pn','disp','receiving','receivingDate','smDone'];
+    const KEEP=['status','remark','defects','stampNo','pn','disp','receiving','receivingDate','smDone','photoTaken','itemId'];
     const existingByNo={};existing.items.forEach(it=>existingByNo[it.no]=it);
     const newByNo={};newInv.items.forEach(it=>newByNo[it.no]=it);
     const merged=newInv.items.map(nit=>{
@@ -1935,10 +1732,10 @@ function parseMykita(text){
     if(orderNo&&name.includes(orderNo)){name=name.replace(new RegExp('\\b'+orderNo+'\\b'),'').replace(/\s{2,}/g,' ').trim();}
     const qtyN=parseInt(qty)||1;
     if(qtyN<=1){
-      items.push({no:pos,qty:'1',unit,itemNo,name,colorCode,cat,unitPrice,orderNo,custRef,status:'pending',remark:'',subOf:null,subIdx:0,subTotal:1,defects:[newDefect()],stampNo:'',photos:[]});
+      items.push({no:pos,qty:'1',unit,itemNo,name,colorCode,cat,unitPrice,orderNo,custRef,status:'pending',remark:'',subOf:null,subIdx:0,subTotal:1,defects:[newDefect()],stampNo:'',photoTaken:false,itemId:''});
     } else {
       for(let si=1;si<=qtyN;si++){
-        items.push({no:pos+'-'+si,qty:'1',unit,itemNo,name,colorCode,cat,unitPrice,orderNo,custRef,status:'pending',remark:'',subOf:pos,subIdx:si,subTotal:qtyN,defects:[newDefect()],stampNo:'',photos:[]});
+        items.push({no:pos+'-'+si,qty:'1',unit,itemNo,name,colorCode,cat,unitPrice,orderNo,custRef,status:'pending',remark:'',subOf:pos,subIdx:si,subTotal:qtyN,defects:[newDefect()],stampNo:'',photoTaken:false,itemId:''});
       }
     }
   }
@@ -1953,7 +1750,7 @@ function applyManual(){
     const no=row.querySelector('.fn').value.trim()||String(i+1);
     const code=row.querySelector('.fc').value.trim();
     const name=row.querySelector('.fd').value.trim();
-    if(name)items.push({no,qty:'1',unit:'PC',itemNo:code,name,colorCode:'',cat:'rx',status:'pending',remark:'',subOf:null,subIdx:0,subTotal:1,defects:[newDefect()],stampNo:'',photos:[]});
+    if(name)items.push({no,qty:'1',unit:'PC',itemNo:code,name,colorCode:'',cat:'rx',status:'pending',remark:'',subOf:null,subIdx:0,subTotal:1,defects:[newDefect()],stampNo:'',photoTaken:false,itemId:''});
   });
   const number=document.getElementById('inp-no')?.value.trim()||'(未入力)';
   const date=document.getElementById('inp-dt')?.value.trim()||'';
@@ -2249,6 +2046,11 @@ function setItemId(no,v){
   S.invoice.items=S.invoice.items.map(it=>it.no!==no?it:{...it,itemId:v});
   save();
 }
+function togglePhotoTaken(no){
+  if(checkArchived())return;
+  S.invoice.items=S.invoice.items.map(it=>it.no!==no?it:{...it,photoTaken:!it.photoTaken});
+  save();render();
+}
 function stampAllFilled(){
   const defs=S.invoice.items.filter(i=>i.status==='defective');
   return defs.length>0 && defs.every(i=>i.stampNo&&i.stampNo.trim());
@@ -2267,14 +2069,6 @@ function buildEmail(){
       `Defective Parts/Conditions : ${it.remark||''}`,
     ].filter(l=>!l.endsWith(': ')).join('\n');
   }).join('\n\n');
-  // Collect photos for attachment selection
-  const allPhotos=[];
-  defs.forEach(it=>{
-    const pos=it.subOf||it.no;
-    (it.photos||[]).forEach(key=>{if(key&&(key.startsWith('data:')||_pc[key]))allPhotos.push({key,pos,name:it.name});});
-  });
-  S.emailPhotoKeys=allPhotos;
-  S.emailSelKeys=new Set(allPhotos.map(p=>p.key));
   S.emailTo='d.duong@mykita.com';
   S.emailSubj=`🟥DEFECTIVE REPORT/MYKITA Osaka`;
   S.emailBody=[
@@ -2366,20 +2160,7 @@ async function sendViaGraph(){
     const subj=g('em-s')?.value||S.emailSubj;
     const body=g('em-b')?.value||S.emailBody;
     const to=g('em-t')?.value||S.emailTo;
-    const sel=(S.emailPhotoKeys||[]).filter(p=>S.emailSelKeys&&S.emailSelKeys.has(p.key));
-    const attachments=[];
-    for(let i=0;i<sel.length;i++){
-      const p=sel[i];
-      const src=await resolvePhotoAsync(p.key);
-      if(!src)continue;
-      const comma=src.indexOf(',');
-      const mime=(src.slice(0,comma).match(/:(.*?);/)||[])[1]||'image/jpeg';
-      const ext=mime.includes('png')?'png':'jpg';
-      const fname=`${p.pos}.${(p.name||'').replace(/[^\w-]/g,'_').slice(0,20)}_${i+1}.${ext}`;
-      attachments.push({'@odata.type':'#microsoft.graph.fileAttachment',name:fname,contentType:mime,contentBytes:src.slice(comma+1)});
-    }
     const message={subject:subj,body:{contentType:'Text',content:body},toRecipients:[{emailAddress:{address:to}}]};
-    if(attachments.length)message.attachments=attachments;
     const res=await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{
       method:'POST',
       headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
@@ -2405,43 +2186,7 @@ function copyEmail(){
   const b=g('em-b')?.value||S.emailBody;
   navigator.clipboard.writeText(b).then(()=>{const btn=g('cbtn');if(btn){btn.textContent='COPIED';setTimeout(()=>btn.textContent='本文をコピー',1500)}});
 }
-async function downloadAttachments(){
-  const sel=(S.emailPhotoKeys||[]).filter(p=>S.emailSelKeys&&S.emailSelKeys.has(p.key));
-  if(!sel.length){alert('写真が選択されていません');return;}
-  const btn=g('dl-att-btn');
-  if(btn){btn.textContent='保存中…';btn.disabled=true;}
-  try{
-    for(let i=0;i<sel.length;i++){
-      const p=sel[i];
-      const src=await resolvePhotoAsync(p.key);
-      if(!src)continue;
-      const comma=src.indexOf(',');
-      const mime=(src.slice(0,comma).match(/:(.*?);/)||[])[1]||'image/jpeg';
-      const ext=mime.includes('png')?'png':'jpg';
-      const fname=`${p.pos}.${(p.name||'').replace(/[^\w-]/g,'_').slice(0,20)}_${i+1}.${ext}`;
-      const a=document.createElement('a');
-      a.href=src;a.download=fname;
-      document.body.appendChild(a);a.click();
-      document.body.removeChild(a);
-      await new Promise(r=>setTimeout(r,300));
-    }
-  }finally{
-    if(btn){btn.textContent='添付画像を保存';btn.disabled=false;}
-  }
-}
-function toggleEmailPhoto(key){
-  if(!S.emailSelKeys)return;
-  if(S.emailSelKeys.has(key))S.emailSelKeys.delete(key);
-  else S.emailSelKeys.add(key);
-  render();
-}
-function toggleAllEmailPhotos(){
-  if(!S.emailPhotoKeys.length)return;
-  if(S.emailSelKeys&&S.emailSelKeys.size===S.emailPhotoKeys.length)S.emailSelKeys=new Set();
-  else S.emailSelKeys=new Set(S.emailPhotoKeys.map(p=>p.key));
-  render();
-}
-function resetApp(){S={...S,screen:'home',invoiceId:null,invoice:null,rawText:'',parseErr:'',loading:false,showEmail:false,emailPhotoKeys:[],emailSelKeys:null,filter:'ALL',tagFilter:[],pickerOpen:{},viewPhoto:null,markup:null,showLeavePrompt:false};render()}
+function resetApp(){S={...S,screen:'home',invoiceId:null,invoice:null,rawText:'',parseErr:'',loading:false,showEmail:false,filter:'ALL',tagFilter:[],pickerOpen:{},showLeavePrompt:false};render()}
 function completeAndLeave(){
   if(gPat()&&gId()&&_dirty){
     if(confirm('変更をPUSHしてホームに戻りますか？\nOK = Push して戻る\nキャンセル = Push せず戻る')){
@@ -2553,36 +2298,24 @@ function defPickerHtml(it){
 function defAreaHtml(it){
   const no=it.no;
   const isOpen=!!S.pickerOpen[no];
-  const photos=it.photos||[];
-  const photoHtml=photos.length?`
-    <div class="photo-strip">
-      ${photos.map((src,i)=>`
-        <div class="photo-thumb-wrap">
-          <img class="photo-thumb" src="${photoSrc(src)}" onclick="viewPhoto('${no}',${i})">
-          <button class="photo-del" onclick="event.stopPropagation();removePhoto('${no}',${i})">×</button>
-        </div>`).join('')}
-      <button class="photo-add-btn" onclick="triggerGallery('${no}',event)">+</button>
-    </div>`:``;
   const dispHtml=(it.disp||it.receiving)?`<div class="disp-row" style="flex-wrap:wrap;gap:4px">
     ${it.disp?`<span class="disp-lbl">DISP</span><span class="disp-btn${it.disp==='return'?' ret':it.disp==='sample'?' smp':''}" style="pointer-events:none">${it.disp==='return'?'Return':it.disp==='sample'?'Sample':'—'}</span>`:''}
     ${it.receiving?`<span class="disp-btn rec" style="pointer-events:none">${it.receivingDate?it.receivingDate+'で入庫':'入庫'}</span>`:''}
   </div>`:'';
+  const photoRowOpen=`<div style="margin-top:10px;margin-left:32px;display:flex;align-items:center;gap:8px" onclick="event.stopPropagation()">
+    <button onclick="togglePhotoTaken('${no}')" style="font-size:10px;letter-spacing:.5px;font-weight:600;padding:5px 10px;border-radius:3px;border:1px solid ${it.photoTaken?'var(--blue)':'var(--g200)'};background:${it.photoTaken?'var(--blue)':'transparent'};color:${it.photoTaken?'#fff':'var(--g400)'};font-family:inherit;cursor:pointer">✔ 写真</button>
+    <input type="text" value="${esc(it.itemId||'')}" placeholder="ID" inputmode="numeric"
+      oninput="setItemId('${no}',this.value)" onclick="event.stopPropagation()"
+      style="flex:1;padding:5px 10px;border:1px solid ${it.itemId?'var(--green)':'var(--g200)'};border-radius:3px;font-size:12px;background:${it.itemId?'var(--greenL)':'transparent'};color:${it.itemId?'var(--green)':'var(--g900)'};font-family:inherit;outline:none">
+  </div>`;
   if(isOpen){
-    return defPickerHtml(it)+`
-      <div class="photo-section" onclick="event.stopPropagation()">
-        <div class="photo-section-lbl">PHOTOS</div>
-        <div class="photo-strip">
-          ${photos.map((src,i)=>`
-            <div class="photo-thumb-wrap">
-              <img class="photo-thumb" src="${photoSrc(src)}" onclick="viewPhoto('${no}',${i})">
-              <button class="photo-del" onclick="removePhoto('${no}',${i})">×</button>
-            </div>`).join('')}
-          <button class="photo-add-btn" onclick="triggerGallery('${no}',event)">+</button>
-        </div>
-      </div>
-      ${dispHtml}`;
+    return defPickerHtml(it)+photoRowOpen+dispHtml;
   }
   const txt=it.remark||'';
+  const photoRowClosed=(it.photoTaken||it.itemId)?`<div style="display:flex;gap:6px;margin-left:32px;margin-top:4px;align-items:center">
+    ${it.photoTaken?`<span style="font-size:9px;letter-spacing:.5px;font-weight:600;color:#fff;background:var(--blue);border:1px solid var(--blue);border-radius:3px;padding:1px 7px">✔ 写真</span>`:''}
+    ${it.itemId?`<span style="font-size:10px;color:var(--g600)">ID: ${esc(it.itemId)}</span>`:''}
+  </div>`:'';
   return `<div class="def-inline" onclick="togglePicker('${no}')">
     ${txt
       ?`<span class="def-inline-txt">▸ ${esc(txt)}</span>`
@@ -2590,298 +2323,9 @@ function defAreaHtml(it){
     }
     <button class="def-inline-edit" onclick="event.stopPropagation();togglePicker('${no}')">EDIT</button>
   </div>
-  ${photoHtml}
+  ${photoRowClosed}
   ${dispHtml}`;
 }
-function viewPhoto(no,idx){
-  const it=S.invoice.items.find(i=>i.no===no);
-  if(!it)return;
-  openMarkup(no,idx);
-}
-function openMarkup(no,idx){
-  if(checkArchived())return;
-  const it=S.invoice.items.find(i=>i.no===no);
-  if(!it)return;
-  const pos=it.subOf||it.no;
-  const autoLabel=pos+'.'+( it.name||'');
-  const origSrc=(it.origPhotos&&it.origPhotos[idx])||it.photos[idx];
-  const burnedSrc=it.photos[idx];
-  const isReedit=!!(it.origPhotos&&it.origPhotos[idx]);
-  const origResolved=photoSrc(origSrc);
-  const burnedResolved=isReedit?photoSrc(burnedSrc):null;
-  S.markup={no,photoIdx:idx,src:origResolved,origSrc:origResolved,tool:'circle',strokes:[],autoLabel,_sel:null,
-    _reedit:isReedit,_burnedSrc:burnedResolved};
-  S.viewPhoto=null;
-  render();
-  if(!isReedit) requestAnimationFrame(initMarkupCanvas);
-}
-
-/* PHOTOS */
-let _galleryNo=null;
-function triggerGallery(no, e){
-  if(e){e.stopPropagation();e.preventDefault();}
-  if(checkArchived())return;
-  _galleryNo=no;
-  const inp=document.getElementById('gallery-input');
-  inp.value='';
-  inp.click();
-}
-function onGalleryChange(inp){
-  if(inp.files[0]&&_galleryNo) handlePhoto(_galleryNo, inp.files[0]);
-  _galleryNo=null;
-}
-async function handlePhoto(no, file){
-  if(!file)return;
-  const img=new Image();
-  const url=URL.createObjectURL(file);
-  img.onload=()=>{
-    const MAX=800;
-    let w=img.width,h=img.height;
-    if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
-    if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
-    const canvas=document.createElement('canvas');
-    canvas.width=w; canvas.height=h;
-    const ctx=canvas.getContext('2d');
-    ctx.drawImage(img,0,0,w,h);
-    URL.revokeObjectURL(url);
-    const origB64=canvas.toDataURL('image/jpeg',0.65);
-    // Burn auto-label onto image
-    const _it=S.invoice.items.find(i=>i.no===no);
-    const label=_it?((_it.subOf||_it.no)+'.'+(_it.name||'')):'';
-    if(label){
-      const fs=Math.max(28,Math.round(w/22))+2;
-      const pad=Math.round(w*0.025);
-      ctx.font='bold '+fs+'px Montserrat,Arial,sans-serif';
-      const olw=Math.max(3,Math.round(fs*0.12));
-      ctx.lineWidth=olw; ctx.lineJoin='round'; ctx.strokeStyle='white';
-      ctx.strokeText(label, pad+10, pad+fs+25);
-      ctx.fillStyle='#e53935';
-      ctx.fillText(label, pad+10, pad+fs+25);
-    }
-    const burnedB64=canvas.toDataURL('image/jpeg',0.65);
-    const bKey=photoKey(), oKey=photoKey();
-    idbPut(bKey,burnedB64); idbPut(oKey,origB64);
-    S.invoice.items=S.invoice.items.map(it=>{
-      if(it.no!==no)return it;
-      const photos=[...(it.photos||[])];
-      const origPhotos=[...(it.origPhotos||[])];
-      photos.push(bKey);
-      origPhotos.push(oKey);
-      return{...it,photos,origPhotos};
-    });
-    save(); render();
-  };
-  img.src=url;
-}
-function openMarkupForExisting(no,idx){
-  const it=S.invoice.items.find(i=>i.no===no);
-  if(!it||!it.photos[idx])return;
-  const _pos=it?((_it2=it,(_it2.subOf||_it2.no)+'.'+(_it2.name||''))):'';
-  const origSrc2=(it.origPhotos&&it.origPhotos[idx])||it.photos[idx];
-  const burnedSrc2=it.photos[idx];
-  const isReedit2=!!(it.origPhotos&&it.origPhotos[idx]);
-  const origResolved2=photoSrc(origSrc2);
-  const burnedResolved2=isReedit2?photoSrc(burnedSrc2):null;
-  S.markup={no,photoIdx:idx,src:origResolved2,origSrc:origResolved2,tool:'circle',strokes:[],autoLabel:_pos,_sel:null,
-    _reedit:isReedit2,_burnedSrc:burnedResolved2};
-  S.viewPhoto=null;
-  render();
-  if(!isReedit2) requestAnimationFrame(()=>initMarkupCanvas());
-}
-function removePhoto(no,pidx){
-  if(checkArchived())return;
-  if(!confirm('この画像を削除しますか？'))return;
-  S.invoice.items=S.invoice.items.map(it=>{
-    if(it.no!==no)return it;
-    const photos=[...(it.photos||[])];
-    const origPhotos=[...(it.origPhotos||[])];
-    const bKey=photos[pidx]; const oKey=origPhotos[pidx];
-    if(bKey&&!bKey.startsWith('data:'))idbDel(bKey);
-    if(oKey&&!oKey.startsWith('data:'))idbDel(oKey);
-    return{...it,photos:photos.filter((_,i)=>i!==pidx),origPhotos:origPhotos.filter((_,i)=>i!==pidx)};
-  });
-  save();render();
-}
-
-/* MARKUP EDITOR */
-let MU={canvas:null,ctx:null,img:null,drawing:false,startX:0,startY:0,scale:1,offX:0,offY:0};
-
-function initMarkupCanvas(){
-  const canvas=document.getElementById('mu-canvas');
-  if(!canvas||!S.markup)return;
-  MU.canvas=canvas;
-  MU.ctx=canvas.getContext('2d');
-  const img=new Image();
-  img.onload=()=>{
-    MU.img=img;
-    const wrap=canvas.parentElement;
-    const scale=Math.min(wrap.clientWidth/img.width, wrap.clientHeight/img.height, 1);
-    canvas.width=img.width; canvas.height=img.height;
-    canvas.style.width=Math.round(img.width*scale)+'px';
-    canvas.style.height=Math.round(img.height*scale)+'px';
-    MU.scale=scale;
-    drawMarkup();
-  };
-  img.src=S.markup.src;
-  canvas.addEventListener('touchstart',muTouchStart,{passive:false});
-  canvas.addEventListener('touchmove',muTouchMove,{passive:false});
-  canvas.addEventListener('touchend',muTouchEnd,{passive:false});
-  canvas.addEventListener('mousedown',e=>muTouchStart({touches:[{clientX:e.clientX,clientY:e.clientY}],preventDefault:()=>{}}));
-  canvas.addEventListener('mousemove',e=>{if(MU.drawing||S.markup.dragStart)muTouchMove({touches:[{clientX:e.clientX,clientY:e.clientY}],preventDefault:()=>{}})});
-  canvas.addEventListener('mouseup',e=>muTouchEnd({changedTouches:[{clientX:e.clientX,clientY:e.clientY}]}));
-}
-
-function muCoord(touch){
-  const rect=MU.canvas.getBoundingClientRect();
-  return{x:(touch.clientX-rect.left)/MU.scale, y:(touch.clientY-rect.top)/MU.scale};
-}
-
-function muHitTest(x,y){
-  const ann=S.markup.annotations;
-  const fs=Math.max(36,Math.round((MU.img?MU.img.width:1000)*0.045));
-  for(let i=ann.length-1;i>=0;i--){
-    const a=ann[i];
-    if(a.type==='circle'){
-      const dist=Math.sqrt((x-a.cx)**2+(y-a.cy)**2);
-      if(Math.abs(dist-a.r)<Math.max(24,a.r*0.18)||dist<a.r*0.3) return i;
-    } else if(a.type==='text'){
-      const tw=a.text.length*fs*0.55;
-      if(x>=a.x-10&&x<=a.x+tw&&y>=a.y-fs&&y<=a.y+12) return i;
-    }
-  }
-  return -1;
-}
-
-function muTouchStart(e){
-  e.preventDefault();
-  const {x,y}=muCoord(e.touches[0]);
-  if(S.markup.tool==='text'){
-    S.markup.textInput={x,y,text:S.markup.autoLabel||''};
-    S.markup.selectedIdx=null;
-    render();
-    requestAnimationFrame(()=>{const inp=document.getElementById('mu-text-inp');if(inp){inp.focus();inp.select();}});
-    return;
-  }
-  if(S.markup.tool==='select'){
-    const hit=muHitTest(x,y);
-    S.markup.selectedIdx=hit>=0?hit:null;
-    if(hit>=0) S.markup.dragStart={x,y};
-    else S.markup.dragStart=null;
-    drawMarkup();
-    render();
-    requestAnimationFrame(initMarkupCanvas);
-    return;
-  }
-  MU.drawing=true; MU.startX=x; MU.startY=y;
-}
-function muTouchMove(e){
-  e.preventDefault();
-  const {x,y}=muCoord(e.touches[0]);
-  if(S.markup.tool==='select'&&S.markup.dragStart!==null&&S.markup.selectedIdx!==null){
-    const dx=x-S.markup.dragStart.x, dy=y-S.markup.dragStart.y;
-    const a=S.markup.annotations[S.markup.selectedIdx];
-    if(a){
-      if(a.type==='circle'){a.cx+=dx;a.cy+=dy;}
-      else if(a.type==='text'){a.x+=dx;a.y+=dy;}
-    }
-    S.markup.dragStart={x,y};
-    drawMarkup();
-    return;
-  }
-  if(!MU.drawing)return;
-  drawMarkup({preview:{x,y}});
-}
-function muTouchEnd(e){
-  S.markup.dragStart=null;
-  if(!MU.drawing)return;
-  MU.drawing=false;
-  const {x,y}=muCoord(e.changedTouches[0]);
-  const dx=x-MU.startX,dy=y-MU.startY;
-  const r=Math.sqrt(dx*dx+dy*dy);
-  if(r>10) S.markup.annotations.push({type:'circle',cx:MU.startX,cy:MU.startY,r});
-  drawMarkup();
-}
-
-function drawMarkup(opts){
-  const ctx=MU.ctx;
-  if(!ctx||!MU.img)return;
-  ctx.clearRect(0,0,MU.canvas.width,MU.canvas.height);
-  ctx.drawImage(MU.img,0,0);
-  const COLOR='#ef5350';
-  const fs=Math.max(36,Math.round(MU.img.width*0.045));
-  const lw=Math.max(4,Math.round(MU.img.width*0.006));
-  ctx.font='bold '+fs+'px Montserrat, Arial, sans-serif';
-  (S.markup.annotations||[]).forEach((a,i)=>{
-    const isSel=S.markup.tool==='select'&&i===S.markup.selectedIdx;
-    ctx.strokeStyle=isSel?'#ff8a80':COLOR;
-    ctx.fillStyle=isSel?'#ff8a80':COLOR;
-    ctx.lineWidth=isSel?lw+3:lw;
-    if(a.type==='circle'){
-      ctx.beginPath();ctx.arc(a.cx,a.cy,a.r,0,Math.PI*2);ctx.stroke();
-    } else if(a.type==='text'){
-      const olw=Math.max(3,Math.round(fs*0.12));
-      ctx.lineWidth=olw; ctx.lineJoin='round'; ctx.strokeStyle='white';
-      ctx.strokeText(a.text,a.x,a.y);
-      ctx.fillStyle=isSel?'#ff8a80':COLOR;
-      ctx.fillText(a.text,a.x,a.y);
-    }
-  });
-  if(opts&&opts.preview&&MU.drawing){
-    const dx=opts.preview.x-MU.startX,dy=opts.preview.y-MU.startY;
-    const r=Math.sqrt(dx*dx+dy*dy);
-    ctx.globalAlpha=0.5;ctx.strokeStyle=COLOR;ctx.lineWidth=lw;
-    ctx.beginPath();ctx.arc(MU.startX,MU.startY,r,0,Math.PI*2);ctx.stroke();
-    ctx.globalAlpha=1;
-  }
-}
-
-function muSetTool(t){
-  S.markup.tool=t;
-  S.markup.textInput=null;
-  S.markup.selectedIdx=null;
-  S.markup.dragStart=null;
-  render();
-  requestAnimationFrame(initMarkupCanvas);
-}
-function muDeleteSelected(){
-  if(S.markup.selectedIdx===null)return;
-  S.markup.annotations.splice(S.markup.selectedIdx,1);
-  S.markup.selectedIdx=null;
-  render();
-  requestAnimationFrame(initMarkupCanvas);
-}
-function muUndo(){
-  if(S.markup.annotations.length) S.markup.annotations.pop();
-  drawMarkup();
-}
-function muConfirmText(){
-  const ti=S.markup.textInput;
-  if(ti&&ti.text.trim()){
-    S.markup.annotations.push({type:"text",x:ti.x,y:ti.y+24,text:ti.text});
-  }
-  S.markup.textInput=null;
-  render();
-  requestAnimationFrame(initMarkupCanvas);
-}
-function muSave(){
-  drawMarkup();
-  const b64=MU.canvas.toDataURL("image/jpeg",0.65);
-  const {no,idx}=S.markup;
-  const key=photoKey();
-  idbPut(key,b64);
-  S.invoice.items=S.invoice.items.map(it=>{
-    if(it.no!==no)return it;
-    const photos=[...(it.photos||[])];
-    const old=photos[idx];
-    if(old&&!old.startsWith('data:'))_deletePhoto(old);
-    photos[idx]=key;
-    return{...it,photos};
-  });
-  save();
-  S.markup=null;
-  render();
-}
-function muClose(){S.markup=null;render();}
 
 /* RENDER */
 function render(){
@@ -3171,43 +2615,21 @@ function render(){
           <div style="font-size:9px;letter-spacing:2px;color:var(--red);font-weight:600;margin-bottom:8px">DEFECTIVE — ${inv.items.filter(i=>i.status==='defective').length} ITEMS</div>
           ${inv.items.filter(i=>i.status==='defective').map(it=>{
             const pos=it.subOf||it.no;
-            const pc=(it.photos||[]).length;return `<div style="font-size:11px;margin-bottom:4px;color:#000"><span style="color:var(--g400);margin-right:6px">${pos}.</span><b>${esc(it.name)}</b>${it.remark?'<span style="color:var(--red)"> · '+esc(it.remark)+'</span>':' <span style="color:var(--redM);font-style:italic">no details</span>'}${pc?'<span style="color:var(--g400);font-size:10px;margin-left:6px">'+pc+' photo'+(pc>1?'s':'')+'</span>':''}</div>`;
+            return `<div style="font-size:11px;margin-bottom:4px;color:#000"><span style="color:var(--g400);margin-right:6px">${pos}.</span><b>${esc(it.name)}</b>${it.remark?'<span style="color:var(--red)"> · '+esc(it.remark)+'</span>':' <span style="color:var(--redM);font-style:italic">no details</span>'}</div>`;
           }).join('')}
         </div>
         <div class="ef"><label>TO</label><input id="em-t" type="email" value="${esc(S.emailTo)}" placeholder="d.duong@mykita.com"></div>
         <div class="ef"><label>SUBJECT</label><input id="em-s" type="text" value="${esc(S.emailSubj)}"></div>
         <div class="ef"><label>BODY</label><textarea id="em-b" style="min-height:280px">${esc(S.emailBody)}</textarea></div>
-        ${S.emailPhotoKeys.length>0?`<div class="ef">
-          <label style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-            <span>PHOTOS &nbsp;<span style="color:var(--g600);font-weight:400">${S.emailSelKeys?S.emailSelKeys.size:0} / ${S.emailPhotoKeys.length} 選択</span></span>
-            <button style="font-size:9px;letter-spacing:1px;padding:2px 8px;border:1px solid var(--g200);border-radius:3px;background:none;cursor:pointer;color:var(--g600);font-family:inherit" onclick="toggleAllEmailPhotos()">${S.emailSelKeys&&S.emailSelKeys.size===S.emailPhotoKeys.length?'全解除':'全選択'}</button>
-          </label>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            ${S.emailPhotoKeys.map(p=>{
-              const sel=!!(S.emailSelKeys&&S.emailSelKeys.has(p.key));
-              const src=photoSrc(p.key);
-              return `<div style="cursor:pointer;text-align:center;flex-shrink:0" onclick="toggleEmailPhoto('${p.key}')">
-                <div style="position:relative;display:inline-block">
-                  <img src="${src}" style="width:62px;height:62px;object-fit:cover;border-radius:4px;display:block;opacity:${sel?1:0.2};border:2px solid ${sel?'var(--red)':'var(--g200)'}">
-                  <div style="position:absolute;top:3px;right:3px;width:16px;height:16px;border-radius:50%;background:${sel?'var(--red)':'rgba(0,0,0,0.25)'};display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700">${sel?'✓':''}</div>
-                </div>
-                <div style="font-size:8px;color:var(--g600);margin-top:2px">${p.pos}.</div>
-              </div>`;
-            }).join('')}
-          </div>
-        </div>`:''}
         ${(()=>{
-          const selCnt=S.emailSelKeys?S.emailSelKeys.size:0;
           const signedIn=!!_msalAccount;
-          const hasSel=selCnt>0;
           return `<div class="eacts" style="flex-direction:column;align-items:stretch;gap:8px">
             ${signedIn
               ?`<div style="font-size:10px;color:var(--green);margin-bottom:2px">${esc(_msalAccount.username)}</div>
-                <button class="btn blk" id="ms-send-btn" onclick="sendViaGraph()">SEND${hasSel?' （写真 '+selCnt+'枚）':''}</button>`
+                <button class="btn blk" id="ms-send-btn" onclick="sendViaGraph()">SEND</button>`
               :`<button class="btn blk" onclick="msSignIn()">Microsoftでサインイン</button>`}
             <div style="display:flex;gap:8px">
               <button class="btn out" id="cbtn" style="flex:1;margin-top:0" onclick="copyEmail()">本文をコピー</button>
-              ${hasSel?`<button class="btn out" id="dl-att-btn" style="flex:1;margin-top:0" onclick="downloadAttachments()">添付画像を保存</button>`:''}
             </div>
           </div>`;
         })()}
@@ -3531,61 +2953,6 @@ function render(){
 </div>`;
   })();
 
-  const photoViewer=S.viewPhoto
-    ?`<div class="photo-viewer">
-        <button class="photo-viewer-close" onclick="S.viewPhoto=null;render()">×</button>
-        <img src="${photoSrc(S.viewPhoto.src)}">
-        <div style="display:flex;gap:10px;margin-top:16px">
-          <button class="photo-viewer-del" style="background:#333;color:#fff" onclick="openMarkupForExisting('${S.viewPhoto.no}',${S.viewPhoto.idx})">EDIT MARKUP</button>
-          <button class="photo-viewer-del" onclick="removePhoto('${S.viewPhoto.no}',${S.viewPhoto.idx});S.viewPhoto=null;render()">× DELETE</button>
-        </div>
-      </div>`
-    :'';
-  const markupEditor=S.markup
-    ?`<div class="mkup">
-        <div class="mkup-toolbar">
-          <button class="mkup-tbtn" onclick="cancelMarkup()">×</button>
-          <div class="mkup-title">MARKUP</div>
-          <button class="mkup-tbtn" style="opacity:0;pointer-events:none">×</button>
-        </div>
-        ${S.markup._preview
-          ?`<div class="mkup-preview-wrap">
-               <div class="mkup-preview-lbl">PREVIEW</div>
-               <img class="mkup-preview-img" src="${esc(S.markup._preview)}">
-             </div>
-             <div class="mkup-actions">
-               <button class="mkup-cancel" onclick="backToEdit()">← 戻る</button>
-               <button class="mkup-done" onclick="confirmMarkup()">SAVE</button>
-             </div>`
-          :S.markup._reedit
-          ?`<div class="mkup-reedit-wrap">
-               <div class="mkup-reedit-ttl">前回の編集内容</div>
-               <img class="mkup-reedit-img" src="${esc(S.markup._burnedSrc||'')}">
-               <div class="mkup-reedit-hint">クリアして再編集しますか？</div>
-             </div>
-             <div class="mkup-actions">
-               <button class="mkup-cancel" onclick="cancelMarkup()">キャンセル</button>
-               <button class="mkup-done" onclick="confirmReedit()">再編集</button>
-             </div>`
-          :`<div class="mkup-canvas-wrap" id="mkup-wrap">
-               <canvas id="mkup-canvas"></canvas>
-             </div>
-             <div class="mkup-label-bar">
-               <span class="mkup-label-lbl">LABEL</span>
-               <input class="mkup-label-inp" id="mkup-label-inp" type="text"
-                 value="${esc(S.markup.autoLabel||'')}"
-                 oninput="S.markup.autoLabel=this.value"
-                 enterkeyhint="done" autocomplete="off">
-             </div>
-             <div class="mkup-hint">ドラッグで赤丸を描く</div>
-             <div class="mkup-actions">
-               <button class="mkup-cancel" onclick="cancelMarkup()">キャンセル</button>
-               <button class="mkup-done" onclick="doneMarkup()">DONE</button>
-             </div>`
-        }
-      </div>`
-    :'';
-
   const _focId=document.activeElement&&document.activeElement.id||null;
   const _focSS=_focId&&document.activeElement.selectionStart!=null?document.activeElement.selectionStart:null;
   const _focSE=_focId&&document.activeElement.selectionEnd!=null?document.activeElement.selectionEnd:null;
@@ -3813,7 +3180,7 @@ function render(){
       ${_defItems.length>0?`<div style="margin-top:12px"><button class="btn blk" style="margin-top:0;opacity:${Object.keys(_pnListChanges).length>0?1:0.35}" onclick="savePnListChanges()">DONE</button></div>`:''}
     </div>
   </div>`;
-})()}${xlsxSelSheet}${csvSelSheet}${csvPickerSheet}${settingsSheet}${pickerBackdrop}${guideModal}${photoViewer}${markupEditor}${S.pushing?`
+})()}${xlsxSelSheet}${csvSelSheet}${csvPickerSheet}${settingsSheet}${pickerBackdrop}${guideModal}${S.pushing?`
   <div style="position:fixed;inset:0;z-index:600;background:rgba(255,255,255,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px">
     <svg class="glass-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 28" width="80" height="28">
       <path d="M1 6 L8 11" stroke="#000" stroke-width="2" stroke-linecap="round" fill="none"/>
@@ -3896,18 +3263,18 @@ ${(()=>{
     `;
   const _hasModal=!!_dispSheet||_pnListOpen||!!_processModal||S.showSettings||S.showEmail||!!_recDatePicker||S.showXlsxSel||S.showCsvSel||S.showCsvPicker||S.showLeavePrompt||!!_editDateId;
   document.body.style.overflow=_hasModal?'hidden':'';
-  if(!S.markup) requestAnimationFrame(()=>{if(_forceScrollTop){_forceScrollTop=false;window.scrollTo(0,0);}else{window.scrollTo(0,_sy);}});
+  requestAnimationFrame(()=>{if(_forceScrollTop){_forceScrollTop=false;window.scrollTo(0,0);}else{window.scrollTo(0,_sy);}});
   if(_focId){const el=document.getElementById(_focId);if(el){el.focus();if(_focSS!=null&&el.setSelectionRange)try{el.setSelectionRange(_focSS,_focSE!=null?_focSE:_focSS);}catch(e){}}}
   _applyItemSearch();_applyPnNameSearch();
   const fab=document.getElementById('scroll-fab');
   if(fab){
-    fab.style.display=(S.screen==='checklist'&&!S.markup&&!S.viewPhoto&&!S.showEmail)?'flex':'none';
+    fab.style.display=(S.screen==='checklist'&&!S.showEmail)?'flex':'none';
     updateFab();
   }
 }
 
 localStorage.removeItem('mykita_dc_dirty'); // clean up legacy persisted dirty flag
-initApp(); _listSnap=_listForSnap(loadList()); idbLoadAll().then(()=>{render();gistAutoSync();}).catch(()=>render());
+initApp(); _listSnap=_listForSnap(loadList()); render(); gistAutoSync();
 
 function fabAtBottom(){const sh=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);return window.innerHeight+window.scrollY>=sh-20;}
 function fabTap(){
@@ -3929,170 +3296,6 @@ window.addEventListener('scroll',updateFab,{passive:true});
 // Pickers are closed only by pressing D again (cycle away from defective),
 // not by outside tap. Screen transitions reset S.pickerOpen via openInvoice/resetApp.
 
-/* ────── MARKUP CANVAS ENGINE ────── */
-let MK={canvas:null,ctx:null,img:null,drawing:false,startX:0,startY:0};
-
-function initMarkupCanvas(){
-  const canvas=document.getElementById('mkup-canvas');
-  if(!canvas||!S.markup)return;
-  MK.drawing=false;
-  MK.canvas=canvas; MK.ctx=canvas.getContext('2d');
-  const img=new Image();
-  img.onload=()=>{
-    MK.img=img;
-    const wrap=document.getElementById('mkup-wrap');
-    const scale=Math.min(wrap.clientWidth/img.width, wrap.clientHeight/img.height, 1);
-    canvas.width=img.width; canvas.height=img.height;
-    canvas.style.width=Math.round(img.width*scale)+'px';
-    canvas.style.height=Math.round(img.height*scale)+'px';
-    redrawMarkup(); addMarkupEvents();
-  };
-  img.src=S.markup.src;
-}
-
-function redrawMarkup(){
-  const {ctx,canvas,img}=MK;
-  if(!ctx||!img)return;
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.drawImage(img,0,0);
-  const lw=Math.max(4,canvas.width/150);
-  ctx.strokeStyle='#e53935';
-  ctx.lineWidth=lw;
-  ctx.shadowColor='rgba(0,0,0,0.5)';
-  ctx.shadowBlur=10;
-  (S.markup.strokes||[]).forEach(s=>{
-    ctx.beginPath();
-    ctx.arc(s.cx,s.cy,s.r,0,Math.PI*2);
-    ctx.stroke();
-  });
-  ctx.shadowBlur=0;
-}
-
-function getPos(e){
-  const canvas=MK.canvas;
-  const rect=canvas.getBoundingClientRect();
-  const scaleX=canvas.width/rect.width, scaleY=canvas.height/rect.height;
-  const src=e.touches&&e.touches.length?e.touches[0]:(e.changedTouches&&e.changedTouches.length?e.changedTouches[0]:e);
-  return{x:(src.clientX-rect.left)*scaleX, y:(src.clientY-rect.top)*scaleY};
-}
-
-function addMarkupEvents(){
-  const canvas=MK.canvas;
-  if(!canvas||canvas._mkupEventsAdded)return;
-  canvas._mkupEventsAdded=true;
-
-  const onStart=e=>{
-    if(!S.markup)return;
-    e.preventDefault();
-    const pos=getPos(e);
-    MK.drawing=true; MK.startX=pos.x; MK.startY=pos.y;
-  };
-  const onMove=e=>{
-    if(!MK.drawing)return;
-    e.preventDefault();
-    const pos=getPos(e);
-    const r=Math.max(Math.sqrt((pos.x-MK.startX)**2+(pos.y-MK.startY)**2),8);
-    redrawMarkup();
-    MK.ctx.strokeStyle='#e53935';
-    MK.ctx.lineWidth=Math.max(4,canvas.width/150);
-    MK.ctx.shadowColor='rgba(0,0,0,0.5)'; MK.ctx.shadowBlur=10;
-    MK.ctx.beginPath(); MK.ctx.arc(MK.startX,MK.startY,r,0,Math.PI*2); MK.ctx.stroke();
-    MK.ctx.shadowBlur=0;
-  };
-  const onEnd=e=>{
-    if(!MK.drawing)return;
-    e.preventDefault(); MK.drawing=false;
-    const pos=getPos(e);
-    const r=Math.max(Math.sqrt((pos.x-MK.startX)**2+(pos.y-MK.startY)**2),8);
-    S.markup.strokes=[{cx:MK.startX,cy:MK.startY,r}]; // 赤丸は常に1つ
-    redrawMarkup();
-  };
-  canvas.addEventListener('touchstart',onStart,{passive:false});
-  canvas.addEventListener('touchmove',onMove,{passive:false});
-  canvas.addEventListener('touchend',onEnd,{passive:false});
-  canvas.addEventListener('mousedown',onStart);
-  canvas.addEventListener('mousemove',onMove);
-  canvas.addEventListener('mouseup',onEnd);
-}
-
-function confirmReedit(){
-  S.markup._reedit=false;
-  S.markup._burnedSrc=null;
-  render();
-  requestAnimationFrame(initMarkupCanvas);
-}
-
-function doneMarkup(){
-  if(!S.markup)return;
-  try{
-    const canvas=MK.canvas;
-    if(!canvas||!MK.img)return;
-    // Burn label onto an off-screen canvas (preserves MK.canvas for back-to-edit)
-    const off=document.createElement('canvas');
-    off.width=canvas.width; off.height=canvas.height;
-    const offCtx=off.getContext('2d');
-    offCtx.drawImage(canvas,0,0);
-    const label=(document.getElementById('mkup-label-inp')||{}).value||S.markup.autoLabel||'';
-    S.markup.autoLabel=label; // persist label value for re-render
-    if(label){
-      const fs=Math.max(28,Math.round(canvas.width/22))+2;
-      const pad=Math.round(canvas.width*0.025);
-      offCtx.font='bold '+fs+'px Montserrat,Arial,sans-serif';
-      const olw=Math.max(3,Math.round(fs*0.12));
-      offCtx.lineWidth=olw; offCtx.lineJoin='round'; offCtx.strokeStyle='white';
-      const stroke=(S.markup.strokes||[])[0];
-      if(stroke){
-        offCtx.textAlign='center';
-        const tx=stroke.cx;
-        const ty=Math.max(fs+4, stroke.cy-stroke.r-30);
-        offCtx.strokeText(label, tx, ty);
-        offCtx.fillStyle='#e53935';
-        offCtx.fillText(label, tx, ty);
-      } else {
-        offCtx.textAlign='left';
-        offCtx.strokeText(label, pad+10, pad+fs+25);
-        offCtx.fillStyle='#e53935';
-        offCtx.fillText(label, pad+10, pad+fs+25);
-      }
-    }
-    S.markup._preview=off.toDataURL('image/jpeg',0.65);
-    render();
-  }catch(e){console.error('doneMarkup error:', e);}
-}
-function confirmMarkup(){
-  if(!S.markup||!S.markup._preview)return;
-  try{
-    const b64=S.markup._preview;
-    const bKey=photoKey();
-    idbPut(bKey,b64);
-    const {no,photoIdx}=S.markup;
-    S.invoice.items=S.invoice.items.map(it=>{
-      if(it.no!==no)return it;
-      const photos=[...(it.photos||[])];
-      const origPhotos=[...(it.origPhotos||[])];
-      if(photoIdx===null||photoIdx===undefined){
-        photos.push(bKey);
-      } else {
-        const old=photos[photoIdx];
-        if(old&&!old.startsWith('data:'))_deletePhoto(old);
-        photos[photoIdx]=bKey;
-      }
-      return{...it,photos,origPhotos};
-    });
-    save();
-  }catch(e){console.error('confirmMarkup error:', e);}
-  finally{S.markup=null; render();}
-}
-function backToEdit(){
-  if(!S.markup)return;
-  S.markup._preview=null;
-  render();
-  requestAnimationFrame(initMarkupCanvas);
-}
-function cancelMarkup(){
-  S.markup=null;
-  render();
-}
 
 /* ── 閉じる前にPush確認 / バックグラウンド時に自動Push / フォアグラウンド時に自動Pull ── */
 window.addEventListener('beforeunload',e=>{
