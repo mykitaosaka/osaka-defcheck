@@ -3132,7 +3132,7 @@ function render(){
     :_defItems.filter(x=>!_isChild(x));
   // Unique invoice numbers for filter dropdown
   const _invNums=[...new Set(_defItems.map(({inv})=>inv.number||'').filter(Boolean))].sort();
-  const _badge=(pn,allDone=false)=>{const tag=getDnpSc(pn,_om);if(!tag)return '';if(allDone){return `<span style="position:relative;display:inline-flex;margin-left:4px;vertical-align:middle"><span class="pn-badge" style="color:var(--teal);border-color:var(--teal);animation:badge-matched 3s ease-in-out infinite">Matched</span><span class="pn-badge" style="position:absolute;left:0;white-space:nowrap;color:var(--teal);border-color:var(--teal);animation:badge-all-done 3s ease-in-out infinite">ALL DONE</span></span>`;}return `<span class="pn-badge" style="margin-left:4px">Matched</span>`;};
+  const _badge=(pn,allDone=false,allDef=false)=>{const tag=getDnpSc(pn,_om);if(!tag)return '';if(allDone){return `<span style="position:relative;display:inline-flex;margin-left:4px;vertical-align:middle"><span class="pn-badge" style="color:var(--teal);border-color:var(--teal);animation:badge-matched 3s ease-in-out infinite">Matched</span><span class="pn-badge" style="position:absolute;left:0;white-space:nowrap;color:var(--teal);border-color:var(--teal);animation:badge-all-done 3s ease-in-out infinite">Put in stock</span></span>`;}if(allDef){return `<span class="pn-badge" style="margin-left:4px;color:var(--red);border-color:var(--red)">Matched</span>`;}return `<span class="pn-badge" style="margin-left:4px">Matched</span>`;};
   const rows=_filtered.map(({it,inv,invId})=>{
     const key=invId+'|'+it.no;
     const isOpen=_pnItemDetail===key;
@@ -3143,10 +3143,11 @@ function render(){
     const _chainLabel=_buildChainLabel(it.pn);
     const _proc=buildProcessChain(invId,it.no);
     const _allDone=_proc&&_proc.steps.length>0&&['ok','ok_receiving'].includes(_proc.steps[_proc.steps.length-1].type);
+    const _allDef=_proc&&_proc.steps.length>0&&_proc.steps[_proc.steps.length-1].type==='defective';
     return `<div data-pn-name="${esc(it.name||'')}" style="border-bottom:1px solid var(--g100)">
       <div style="padding:10px 0;display:flex;align-items:center;gap:8px;cursor:pointer" onclick="togglePnDetail('${key}')">
         <div style="flex:1;min-width:0">
-          <div style="font-size:10px;font-weight:700;font-family:monospace;color:var(--k)">${esc(it.pn)}${_badge(it.pn,_allDone)}${_chainLabel?`<span style="font-size:9px;font-weight:400;color:var(--g400);margin-left:4px">${esc(_chainLabel)}</span>`:''}</div>
+          <div style="font-size:10px;font-weight:700;font-family:monospace;color:var(--k)">${esc(it.pn)}${_badge(it.pn,_allDone,_allDef)}${_chainLabel?`<span style="font-size:9px;font-weight:400;color:var(--g400);margin-left:4px">${esc(_chainLabel)}</span>`:''}</div>
           <div style="font-size:11px;color:var(--g600);margin-top:2px">${esc(it.name||'—')}${it.colorCode?` <span style="color:var(--g400)">#${it.colorCode}</span>`:''}</div>
           <div style="font-size:9px;color:var(--g400);margin-top:1px">${esc(inv.number||invId)}${_pnRank.has(key)?`<span style="margin-left:5px;font-size:8px;font-weight:600;color:var(--g400);font-family:monospace">${_pnRank.get(key)}</span>`:''}</div>
         </div>
