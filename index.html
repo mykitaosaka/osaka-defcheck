@@ -938,13 +938,15 @@ function exportSumarejiCSV(){
     }
   }
   // RECE items: defective items from any invoice received into these invoices
+  // Exclude items whose itemNo is already counted in grouped (replacement SUN/RX already added)
   let _receAdded=false;
   const receAll=[];
   invNums.forEach(num=>receAll.push(...collectReceItems(num)));
-  if(receAll.length){
-    const lines=receAll.map(({it,invNumber})=>`・${it.name||it.itemNo} (${invNumber}-${it.no})`).join('\n');
+  const receFiltered=receAll.filter(({it})=>!grouped.has(it.itemNo));
+  if(receFiltered.length){
+    const lines=receFiltered.map(({it,invNumber})=>`・${it.name||it.itemNo} (${invNumber}-${it.no})`).join('\n');
     if(confirm('以下のRECEアイテムを入庫CSVに追加しますか？\n\n'+lines+'\n\nOK = 追加\nキャンセル = 追加しない')){
-      _appendReceToRows(rows,receAll);_receAdded=true;
+      _appendReceToRows(rows,receFiltered);_receAdded=true;
     }
   }
   // PARTS OK with PN match: add rows + warn
@@ -1012,12 +1014,14 @@ function exportSumarejiCSVById(id){
       }
     }
     // RECE items: defective items from any invoice received into this invoice
+    // Exclude items whose itemNo is already counted in grouped (replacement SUN/RX already added)
     let _receAdded=false;
     const receItems=collectReceItems(inv.number);
-    if(receItems.length){
-      const lines=receItems.map(({it,invNumber})=>`・${it.name||it.itemNo} (${invNumber}-${it.no})`).join('\n');
+    const receFiltered=receItems.filter(({it})=>!grouped.has(it.itemNo));
+    if(receFiltered.length){
+      const lines=receFiltered.map(({it,invNumber})=>`・${it.name||it.itemNo} (${invNumber}-${it.no})`).join('\n');
       if(confirm('以下のRECEアイテムを入庫CSVに追加しますか？\n\n'+lines+'\n\nOK = 追加\nキャンセル = 追加しない')){
-        _appendReceToRows(rows,receItems);_receAdded=true;
+        _appendReceToRows(rows,receFiltered);_receAdded=true;
       }
     }
     // PARTS OK with PN match: add rows + warn
