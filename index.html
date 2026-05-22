@@ -878,11 +878,13 @@ function collectReceItems(targetInvNumber){
 function _appendReceToRows(rows,receItems){
   const g=new Map();
   receItems.forEach(({it})=>{
-    if(!g.has(it.itemNo))g.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||''});
-    g.get(it.itemNo).count++;
+    if(!g.has(it.itemNo))g.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:'Receiving'});
+    const _ge=g.get(it.itemNo);
+    _ge.count++;
+    if((it.custRef||'').toLowerCase().includes('def new prod'))_ge.note='def new prod';
   });
-  for(const [itemNo,{count,name,posNo,colorCode}] of g){
-    rows.push([itemNo,count,'',posNo,name,colorCode,'Receiving']);
+  for(const [itemNo,{count,name,posNo,colorCode,note}] of g){
+    rows.push([itemNo,count,'',posNo,name,colorCode,note]);
   }
 }
 function exportSumarejiCSV(){
@@ -900,8 +902,10 @@ function exportSumarejiCSV(){
       if(inv.number)invNums.push(inv.number);
       inv.items.forEach(it=>{
         if((it.cat==='rx'||it.cat==='sun')&&it.status==='ok'&&!it.smDone){
-          if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||''});
-          grouped.get(it.itemNo).count++;
+          if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:''});
+          const _ge=grouped.get(it.itemNo);
+          _ge.count++;
+          if((it.custRef||'').toLowerCase().includes('def new prod'))_ge.note='def new prod';
           if(isDsSbCustRef(it.custRef)&&!_dsSbWarnItems.some(w=>w.itemNo===it.itemNo))
             _dsSbWarnItems.push({invId:id,itemNo:it.itemNo,posNo:it.subOf||it.no,name:it.name,custRef:it.custRef||''});
         }
@@ -918,11 +922,11 @@ function exportSumarejiCSV(){
     }catch(e){}
   });
   const rows=[];
-  for(const [itemNo,{count,name,unitPrice,posNo,colorCode}] of grouped){
+  for(const [itemNo,{count,name,unitPrice,posNo,colorCode,note}] of grouped){
     if(count>=getSmQtyAlert()){
       if(!confirm('Item No: '+itemNo+'\nName: '+name+'\nQty: '+count+'\n\nQuantity is 10 or more. Include in CSV?\nOK = Include\nCancel = Skip'))continue;
     }
-    rows.push([itemNo,count,unitPrice,posNo,name,colorCode,'']);
+    rows.push([itemNo,count,unitPrice,posNo,name,colorCode,note||'']);
   }
   if(_dsSbWarnItems.length){
     const _wl=_dsSbWarnItems.map(w=>`・${w.posNo}. ${w.name} (${w.custRef})`).join('\n');
@@ -988,8 +992,10 @@ function exportSumarejiCSVById(id){
     const _dsSbWarnItems=[];
     inv.items.forEach(it=>{
       if((it.cat==='rx'||it.cat==='sun')&&it.status==='ok'&&!it.smDone){
-        if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,unitPrice:it.unitPrice||'',posNo:it.subOf||it.no,colorCode:it.colorCode||''});
-        grouped.get(it.itemNo).count++;
+        if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,unitPrice:it.unitPrice||'',posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:''});
+        const _ge=grouped.get(it.itemNo);
+        _ge.count++;
+        if((it.custRef||'').toLowerCase().includes('def new prod'))_ge.note='def new prod';
         if(isDsSbCustRef(it.custRef)&&!_dsSbWarnItems.some(w=>w.itemNo===it.itemNo))
           _dsSbWarnItems.push({itemNo:it.itemNo,posNo:it.subOf||it.no,name:it.name,custRef:it.custRef||''});
       }
@@ -998,11 +1004,11 @@ function exportSumarejiCSVById(id){
       }
     });
     const rows=[];
-    for(const [itemNo,{count,name,posNo,colorCode}] of grouped){
+    for(const [itemNo,{count,name,posNo,colorCode,note}] of grouped){
       if(count>=getSmQtyAlert()){
         if(!confirm('Item No: '+itemNo+'\nName: '+name+'\nQty: '+count+'\n\nQuantity is 10 or more. Include in CSV?\nOK = Include\nCancel = Skip'))continue;
       }
-      rows.push([itemNo,count,'',posNo,name,colorCode,'']);
+      rows.push([itemNo,count,'',posNo,name,colorCode,note||'']);
     }
     if(_dsSbWarnItems.length){
       const _wl=_dsSbWarnItems.map(w=>`・${w.posNo}. ${w.name} (${w.custRef})`).join('\n');
