@@ -246,8 +246,8 @@
   @keyframes guide-pull-dot{0%,8%{left:calc(100% - 8px);opacity:0}15%{left:calc(100% - 8px);opacity:1}72%{left:0;opacity:1}82%,100%{left:0;opacity:0}}
   @keyframes guide-upload-gray{0%,35%{opacity:1}50%,80%{opacity:0}92%,100%{opacity:1}}
   @keyframes guide-upload-red{0%,35%{opacity:0}50%,80%{opacity:1}92%,100%{opacity:0}}
-  @keyframes badge-matched{0%,38%{opacity:1}50%,88%{opacity:0}100%{opacity:1}}
-  @keyframes badge-all-done{0%,38%{opacity:0}50%,88%{opacity:1}100%{opacity:0}}
+  @keyframes badge-matched{0%,49%{opacity:1}50%,99%{opacity:0}100%{opacity:1}}
+  @keyframes badge-all-done{0%,49%{opacity:0}50%,99%{opacity:1}100%{opacity:0}}
   @keyframes guide-chk-pbtn{0%,15%{opacity:1}20%,100%{opacity:0}}
   @keyframes guide-chk-dbtn{0%,17%{opacity:0}22%,92%{opacity:1}96%,100%{opacity:0}}
   @keyframes guide-chk-picker{0%,22%{opacity:0;transform:translateY(-6px)}27%{opacity:1;transform:translateY(0)}90%{opacity:1;transform:translateY(0);animation-timing-function:cubic-bezier(0.4,0,1,1)}92%,100%{opacity:0;transform:translateY(-18px)}}
@@ -3133,7 +3133,7 @@ function render(){
     :_defItems.filter(x=>!_isChild(x));
   // Unique invoice numbers for filter dropdown
   const _invNums=[...new Set(_defItems.map(({inv})=>inv.number||'').filter(Boolean))].sort();
-  const _badge=(pn,allDone=false,allDef=false)=>{const tag=getDnpSc(pn,_om);if(!tag)return '';if(allDone){return `<span style="position:relative;display:inline-flex;margin-left:4px;vertical-align:middle"><span class="pn-badge" style="opacity:0;white-space:nowrap;pointer-events:none">Put in stock</span><span class="pn-badge" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--teal);border-color:var(--teal);animation:badge-matched 3s ease-in-out infinite">Matched</span><span class="pn-badge" style="position:absolute;left:0;white-space:nowrap;color:var(--teal);border-color:var(--teal);animation:badge-all-done 3s ease-in-out infinite">Put in stock</span></span>`;}if(allDef){return `<span class="pn-badge" style="margin-left:4px;color:var(--red);border-color:var(--red)">Matched</span>`;}return `<span class="pn-badge" style="margin-left:4px">Matched</span>`;};
+  const _badge=(pn,allDone=false,allDef=false)=>{const tag=getDnpSc(pn,_om);if(!tag)return '';if(allDone){return `<span style="position:relative;display:inline-flex;margin-left:4px;vertical-align:middle"><span class="pn-badge" style="opacity:0;white-space:nowrap;pointer-events:none">Put in stock</span><span class="pn-badge" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--teal);border-color:var(--teal);animation:badge-matched 3s steps(1) infinite">Matched</span><span class="pn-badge" style="position:absolute;left:0;white-space:nowrap;color:var(--teal);border-color:var(--teal);animation:badge-all-done 3s steps(1) infinite">Put in stock</span></span>`;}if(allDef){return `<span class="pn-badge" style="margin-left:4px;color:var(--red);border-color:var(--red)">Matched</span>`;}return `<span class="pn-badge" style="margin-left:4px">Matched</span>`;};
   const rows=_filtered.map(({it,inv,invId})=>{
     const key=invId+'|'+it.no;
     const isOpen=_pnItemDetail===key;
