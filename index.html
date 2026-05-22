@@ -3122,7 +3122,7 @@ function render(){
   // Build rank map: when multiple items share the same pn, track X/N position
   const _pnRank=new Map();
   const _pnGroups={};
-  _defItems.forEach(({it,invId})=>{const p=it.pn||'';if(p){if(!_pnGroups[p])_pnGroups[p]=[];_pnGroups[p].push(invId+'|'+it.no);}});
+  _defItems.forEach(({it,invId})=>{const p=it.pn||'';if(p){const gk=invId+'|'+p;if(!_pnGroups[gk])_pnGroups[gk]=[];_pnGroups[gk].push(invId+'|'+it.no);}});
   Object.values(_pnGroups).forEach(keys=>{if(keys.length>1)keys.forEach((k,i)=>_pnRank.set(k,`${i+1}/${keys.length}`));});
   const _q=_pnSearch.trim();
   // Chain detection: items whose orderNo matches another defective item's pn are "children"
