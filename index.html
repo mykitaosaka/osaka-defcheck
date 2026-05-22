@@ -2351,6 +2351,8 @@ function defAreaHtml(it){
 /* RENDER */
 function render(){
   const _sy=window.scrollY||0;
+  const _pnSheetEl=document.getElementById('pn-list-sheet');
+  const _pnSy=_pnSheetEl?_pnSheetEl.scrollTop:0;
   const inv=S.invoice;
   const pend=inv?inv.items.filter(i=>i.status==='pending').length:0;
   const ok=inv?inv.items.filter(i=>i.status==='ok').length:0;
@@ -3185,7 +3187,7 @@ function render(){
     </div>`;
   });
   return `<div class="overlay" onclick="if(event.target===this)tryClosePnList()" style="z-index:250">
-    <div class="sheet">
+    <div class="sheet" id="pn-list-sheet">
       <div class="sheet-tit">PN SEARCH<button class="close-btn" onclick="tryClosePnList()">×</button></div>
       <div style="position:relative;margin-bottom:8px">
         <input id="pn-search-inp" type="tel" inputmode="numeric" pattern="[0-9]*" value="${esc(_pnSearch)}" placeholder="PN番号"
@@ -3285,7 +3287,7 @@ ${(()=>{
     `;
   const _hasModal=!!_dispSheet||_pnListOpen||!!_processModal||S.showSettings||S.showEmail||!!_recDatePicker||S.showXlsxSel||S.showCsvSel||S.showCsvPicker||S.showLeavePrompt;
   document.body.style.overflow=_hasModal?'hidden':'';
-  requestAnimationFrame(()=>{if(_forceScrollTop){_forceScrollTop=false;window.scrollTo(0,0);}else{window.scrollTo(0,_sy);}});
+  requestAnimationFrame(()=>{if(_forceScrollTop){_forceScrollTop=false;window.scrollTo(0,0);}else{window.scrollTo(0,_sy);}const _pnS=document.getElementById('pn-list-sheet');if(_pnS)_pnS.scrollTop=_pnSy;});
   if(_focId){const el=document.getElementById(_focId);if(el){el.focus();if(_focSS!=null&&el.setSelectionRange)try{el.setSelectionRange(_focSS,_focSE!=null?_focSE:_focSS);}catch(e){}}}
   _applyItemSearch();_applyPnNameSearch();
   const fab=document.getElementById('scroll-fab');
