@@ -877,8 +877,8 @@ function collectReceItems(targetInvNumber){
 }
 function _appendReceToRows(rows,receItems){
   const g=new Map();
-  receItems.forEach(({it})=>{
-    if(!g.has(it.itemNo))g.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:'Receiving'});
+  receItems.forEach(({it,invNumber})=>{
+    if(!g.has(it.itemNo))g.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:`Replacement(${invNumber})`});
     const _ge=g.get(it.itemNo);
     _ge.count++;
     if((it.custRef||'').toLowerCase().includes('def new prod'))_ge.note='def new prod';
