@@ -537,7 +537,8 @@ function buildProcessChain(rootInvId,rootItemNo){
     const _vk=invId+'|'+item.no;if(_visited.has(_vk)||depth>10)return;_visited.add(_vk);
     steps.push({type:depth===0?'order':'delivery',invNumber:inv.number||invId,cat:item.cat,name:item.name,no:item.subOf||item.no});
     if(item.status==='defective'){
-      steps.push({type:'defective'});
+      const _isMissing=(item.defects||[]).some(d=>(d.cond||[]).includes('Missing'));
+      steps.push({type:'defective',missing:_isMissing});
       if(item.pn)steps.push({type:'pn',pn:item.pn});
       if(item.pn){
         const _cands=[];
@@ -3248,6 +3249,7 @@ ${(()=>{
   };
   const html=steps.map((s,i)=>{
     const d=_defs[s.type]||{icon:'·',label:s.type,color:'var(--g400)'};
+    const _label=(s.type==='defective'&&s.missing)?'DEFECTIVE (MISSING)':d.label;
     const isLast=i===steps.length-1;
     let sub='';
     if(s.type==='order'||s.type==='delivery'){sub=`${s.invNumber} · ${(s.cat||'').toUpperCase()} · pos ${s.no}`;}
@@ -3261,7 +3263,7 @@ ${(()=>{
           ${!isLast?`<div class="proc-conn" style="animation-delay:${delay+180}ms"></div>`:''}
         </div>
         <div style="padding:5px 0">
-          <div style="font-size:9px;letter-spacing:1.5px;font-weight:700;color:${d.color}">${d.label}</div>
+          <div style="font-size:9px;letter-spacing:1.5px;font-weight:700;color:${d.color}">${_label}</div>
           ${sub?`<div style="font-size:11px;color:var(--g500);margin-top:1px;font-family:${s.type==='pn'?'monospace':'inherit'}">${sub}</div>`:''}
         </div>
       </div>
