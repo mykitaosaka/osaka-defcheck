@@ -532,6 +532,8 @@ function buildProcessChain(rootInvId,rootItemNo){
   loadList().forEach(e=>{try{const d=localStorage.getItem('mykita_dc_inv_'+e.id);if(!d)return;const inv=JSON.parse(d);allInvs[e.id]={...inv,items:inv.items.map(it=>{const patch=_pnListChanges[e.id+'|'+it.no];return patch?{...it,...patch}:it;})};}catch(x){}});
   const steps=[];
   const _visited=new Set();
+  let _chainSlot=0;
+  function _sortByPos(arr){return arr.sort((a,b)=>{const an=parseFloat(a.subOf||a.no)||0,bn=parseFloat(b.subOf||b.no)||0;return an-bn||(a.subIdx||0)-(b.subIdx||0);});}
   function traverse(invId,item,depth){
     const inv=allInvs[invId];if(!inv)return;
     const _vk=invId+'|'+item.no;if(_visited.has(_vk)||depth>10)return;_visited.add(_vk);
@@ -544,11 +546,12 @@ function buildProcessChain(rootInvId,rootItemNo){
         const _cands=[];
         for(const[cId,cInv]of Object.entries(allInvs)){
           if(cId===invId)continue;
-          const child=cInv.items.find(it=>it.orderNo&&it.orderNo.trim()===item.pn.trim());
-          if(child)_cands.push({cId,cInv,child});
+          const _ms=_sortByPos(cInv.items.filter(it=>it.orderNo&&it.orderNo.trim()===item.pn.trim()));
+          if(_ms[_chainSlot]!=null)_cands.push({cId,cInv,child:_ms[_chainSlot]});
         }
         _cands.sort((a,b)=>(parseInt(a.cInv.number||a.cId)||0)-(parseInt(b.cInv.number||b.cId)||0));
         if(_cands.length)traverse(_cands[0].cId,_cands[0].child,depth+1);
+        else steps.push({type:'pending'});
       }
     }else if(item.status==='ok'){
       steps.push({type:'ok_receiving',invNumber:inv.number||invId});
@@ -558,6 +561,8 @@ function buildProcessChain(rootInvId,rootItemNo){
   }
   const rootInv=allInvs[rootInvId];if(!rootInv)return null;
   const rootItem=rootInv.items.find(i=>i.no===rootItemNo);if(!rootItem)return null;
+  const _rootKey=((rootItem.pn||rootItem.orderNo)||'').trim();
+  if(_rootKey){const _peers=_sortByPos(rootInv.items.filter(it=>(it.pn||'').trim()===_rootKey||(it.orderNo||'').trim()===_rootKey));const _fi=_peers.findIndex(it=>it.no===rootItemNo);if(_fi>=0)_chainSlot=_fi;}
   traverse(rootInvId,rootItem,0);
   return{steps,title:rootItem.name+(rootItem.colorCode?' #'+rootItem.colorCode:'')};
 }
