@@ -634,7 +634,7 @@ function buildPnMap(){
         if(it.status==='defective'&&it.pn){
           const pn=it.pn.trim();
           if(!map.has(pn))map.set(pn,[]);
-          map.get(pn).push({invNumber:inv.number||e.id,no:it.no});
+          map.get(pn).push({invId:e.id,invNumber:inv.number||e.id,no:it.no});
         }
       }
     }catch(x){}
@@ -887,12 +887,26 @@ function _appendReceToRows(rows,receItems){
     rows.push([itemNo,count,'',posNo,name,colorCode,note]);
   }
 }
+function _findPartsRoot(orderNo,_pnMap){
+  const cands=_pnMap.get(orderNo)||[];
+  const roots=[];
+  for(const {invId,invNumber,no} of cands){
+    try{
+      const d=localStorage.getItem('mykita_dc_inv_'+invId);if(!d)continue;
+      const inv=JSON.parse(d);
+      const item=inv.items.find(it=>it.no===no);
+      if(item&&(item.cat==='rx'||item.cat==='sun'))roots.push({item,invNumber,invId});
+    }catch(x){}
+  }
+  return roots.length===1?roots[0]:null;
+}
 function exportSumarejiCSV(){
   if(!S.csvSelIds||!S.csvSelIds.size){alert('Select at least one invoice.');return;}
   const grouped=new Map();
   const invNums=[];
   const _pnMap=buildPnMap();
   const _partsWarnAll=[];
+  const _partsResolved=[];
   const _dsSbWarnItems=[];
   S.csvSelIds.forEach(id=>{
     const d=localStorage.getItem('mykita_dc_inv_'+id);
@@ -911,12 +925,11 @@ function exportSumarejiCSV(){
         }
       });
       // PARTS OK with PN match
-      const _pg=new Map();
       inv.items.forEach(it=>{
         if(it.cat==='parts'&&it.status==='ok'&&!it.smDone&&it.orderNo&&_pnMap.has(it.orderNo.trim())){
-          if(!_pg.has(it.itemNo))_pg.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||''});
-          _pg.get(it.itemNo).count++;
-          _partsWarnAll.push(it);
+          const _root=_findPartsRoot(it.orderNo.trim(),_pnMap);
+          if(_root)_partsResolved.push({partsIt:it,rootItem:_root.item,rootInvNumber:_root.invNumber});
+          else _partsWarnAll.push(it);
         }
       });
     }catch(e){}
@@ -941,19 +954,31 @@ function exportSumarejiCSV(){
       }
     }
   }
-  // RECE items: defective items from any invoice received into these invoices
-  // Exclude items whose itemNo is already counted in grouped (replacement SUN/RX already added)
+  // RECE items: exclude already counted as OK SUN/RX and items whose root is handled by resolved PARTS
   let _receAdded=false;
   const receAll=[];
   invNums.forEach(num=>receAll.push(...collectReceItems(num)));
-  const receFiltered=receAll.filter(({it})=>!grouped.has(it.itemNo));
+  const _resolvedRootNos=new Set(_partsResolved.map(({rootItem})=>rootItem.itemNo));
+  const receFiltered=receAll.filter(({it})=>!grouped.has(it.itemNo)&&!_resolvedRootNos.has(it.itemNo));
   if(receFiltered.length){
     const lines=receFiltered.map(({it,invNumber})=>`・${it.name||it.itemNo} (${invNumber}-${it.no})`).join('\n');
     if(confirm('以下のRECEアイテムを入庫CSVに追加しますか？\n\n'+lines+'\n\nOK = 追加\nキャンセル = 追加しない')){
       _appendReceToRows(rows,receFiltered);_receAdded=true;
     }
   }
-  // PARTS OK with PN match: add rows + warn
+  // Resolved PARTS: automatically add with root item data (no warning)
+  if(_partsResolved.length){
+    const _rpg=new Map();
+    _partsResolved.forEach(({rootItem,rootInvNumber})=>{
+      const rk=rootItem.itemNo;
+      const _note=(rootItem.custRef||'').toLowerCase().includes('def new prod')?'def new prod':`Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`;
+      if(!_rpg.has(rk))_rpg.set(rk,{count:0,name:rootItem.name,posNo:rootItem.subOf||rootItem.no,colorCode:rootItem.colorCode||'',note:_note});
+      _rpg.get(rk).count++;
+    });
+    for(const [itemNo,{count,name,posNo,colorCode,note}] of _rpg){rows.push([itemNo,count,'',posNo,name,colorCode,note]);}
+    _receAdded=true;
+  }
+  // Unresolved PARTS: warn (only when RECE was added or no RECE items)
   if(_partsWarnAll.length&&(_receAdded||!receAll.length)){
     const _pg=new Map();
     _partsWarnAll.forEach(it=>{
@@ -961,10 +986,10 @@ function exportSumarejiCSV(){
       _pg.get(it.itemNo).count++;
     });
     for(const [itemNo,{count,name,posNo,colorCode}] of _pg){
-      rows.push([itemNo,count,'',posNo,name,colorCode,'PARTS複数回D - 要手入力修正']);
+      rows.push([itemNo,count,'',posNo,name,colorCode,'PARTS - 要手入力修正']);
     }
     const _wl=_partsWarnAll.map(it=>`・${it.subOf||it.no}. ${it.name||it.itemNo}`).join('\n');
-    alert('⚠️ 以下のアイテムは複数回のPARTSディフェクティブにより\n元となるアイテムとの照合ができませんでした。\nダウンロード後に手入力で修正してください。\n\n'+_wl);
+    alert('⚠️ 以下のアイテムは元となるアイテムとの照合ができませんでした。\nダウンロード後に手入力で修正してください。\n\n'+_wl);
   }
   if(!rows.length){alert('No data to export.');return;}
   if(typeof Encoding==='undefined'){alert('Encoding library not loaded. Please reload the page.');return;}
@@ -989,6 +1014,7 @@ function exportSumarejiCSVById(id){
     const grouped=new Map();
     const _pnMap=buildPnMap();
     const _partsWarn=[];
+    const _partsResolved=[];
     const _dsSbWarnItems=[];
     inv.items.forEach(it=>{
       if((it.cat==='rx'||it.cat==='sun')&&it.status==='ok'&&!it.smDone){
@@ -1000,7 +1026,9 @@ function exportSumarejiCSVById(id){
           _dsSbWarnItems.push({itemNo:it.itemNo,posNo:it.subOf||it.no,name:it.name,custRef:it.custRef||''});
       }
       if(it.cat==='parts'&&it.status==='ok'&&!it.smDone&&it.orderNo&&_pnMap.has(it.orderNo.trim())){
-        _partsWarn.push(it);
+        const _root=_findPartsRoot(it.orderNo.trim(),_pnMap);
+        if(_root)_partsResolved.push({partsIt:it,rootItem:_root.item,rootInvNumber:_root.invNumber});
+        else _partsWarn.push(it);
       }
     });
     const rows=[];
@@ -1019,18 +1047,30 @@ function exportSumarejiCSVById(id){
         try{const _sd=JSON.parse(localStorage.getItem('mykita_dc_inv_'+id)||'null');if(_sd){_sd.items=_sd.items.map(it=>_excl.has(it.itemNo)?{...it,smDone:true}:it);localStorage.setItem('mykita_dc_inv_'+id,JSON.stringify(_sd));if(S.invoiceId===id)S.invoice=_sd;}}catch(ex){}
       }
     }
-    // RECE items: defective items from any invoice received into this invoice
-    // Exclude items whose itemNo is already counted in grouped (replacement SUN/RX already added)
+    // RECE items: exclude already counted + items whose root is handled by resolved PARTS
     let _receAdded=false;
     const receItems=collectReceItems(inv.number);
-    const receFiltered=receItems.filter(({it})=>!grouped.has(it.itemNo));
+    const _resolvedRootNos=new Set(_partsResolved.map(({rootItem})=>rootItem.itemNo));
+    const receFiltered=receItems.filter(({it})=>!grouped.has(it.itemNo)&&!_resolvedRootNos.has(it.itemNo));
     if(receFiltered.length){
       const lines=receFiltered.map(({it,invNumber})=>`・${it.name||it.itemNo} (${invNumber}-${it.no})`).join('\n');
       if(confirm('以下のRECEアイテムを入庫CSVに追加しますか？\n\n'+lines+'\n\nOK = 追加\nキャンセル = 追加しない')){
         _appendReceToRows(rows,receFiltered);_receAdded=true;
       }
     }
-    // PARTS OK with PN match: add rows + warn
+    // Resolved PARTS: automatically add with root item data (no warning)
+    if(_partsResolved.length){
+      const _rpg=new Map();
+      _partsResolved.forEach(({rootItem,rootInvNumber})=>{
+        const rk=rootItem.itemNo;
+        const _note=(rootItem.custRef||'').toLowerCase().includes('def new prod')?'def new prod':`Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`;
+        if(!_rpg.has(rk))_rpg.set(rk,{count:0,name:rootItem.name,posNo:rootItem.subOf||rootItem.no,colorCode:rootItem.colorCode||'',note:_note});
+        _rpg.get(rk).count++;
+      });
+      for(const [itemNo,{count,name,posNo,colorCode,note}] of _rpg){rows.push([itemNo,count,'',posNo,name,colorCode,note]);}
+      _receAdded=true;
+    }
+    // Unresolved PARTS: warn
     if(_partsWarn.length&&(_receAdded||!receItems.length)){
       const _pg=new Map();
       _partsWarn.forEach(it=>{
@@ -1038,10 +1078,10 @@ function exportSumarejiCSVById(id){
         _pg.get(it.itemNo).count++;
       });
       for(const [itemNo,{count,name,posNo,colorCode}] of _pg){
-        rows.push(['','','',posNo,name,colorCode,'PARTS複数回D - 要手入力修正']);
+        rows.push([itemNo,count,'',posNo,name,colorCode,'PARTS - 要手入力修正']);
       }
       const _wl=_partsWarn.map(it=>`・${it.subOf||it.no}. ${it.name||it.itemNo}`).join('\n');
-      alert('⚠️ 以下のアイテムは複数回のPARTSディフェクティブにより\n元となるアイテムとの照合ができませんでした。\nダウンロード後に手入力で修正してください。\n\n'+_wl);
+      alert('⚠️ 以下のアイテムは元となるアイテムとの照合ができませんでした。\nダウンロード後に手入力で修正してください。\n\n'+_wl);
     }
     if(!rows.length){alert('No data to export.');return;}
     if(typeof Encoding==='undefined'){alert('Encoding library not loaded. Please reload the page.');return;}
