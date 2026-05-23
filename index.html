@@ -659,6 +659,7 @@ function buildOrderNoMap(){
   return map;
 }
 function isDsSbCustRef(custRef){const cr=(custRef||'').toLowerCase();return cr.includes('def stock')||cr.includes('stock claim')||cr.includes('shop breakage');}
+function _isDefReplaceCustRef(custRef){const cr=(custRef||'').toLowerCase();return cr.includes('def new prod')||cr.includes('def stock')||cr.includes('stock claim');}
 function getDnpSc(pn,orderNoMap){
   if(!pn||!orderNoMap[pn])return null;
   for(const m of orderNoMap[pn]){
@@ -881,7 +882,7 @@ function _appendReceToRows(rows,receItems){
     if(!g.has(it.itemNo))g.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:`Replace from ${invNumber}-${it.subOf||it.no}`});
     const _ge=g.get(it.itemNo);
     _ge.count++;
-    if((it.custRef||'').toLowerCase().includes('def new prod'))_ge.note=`def new prod / Replace from ${invNumber}-${it.subOf||it.no}`;
+    if(_isDefReplaceCustRef(it.custRef))_ge.note=`def new prod / Replace from ${invNumber}-${it.subOf||it.no}`;
   });
   for(const [itemNo,{count,name,posNo,colorCode,note}] of g){
     rows.push([itemNo,count,'',posNo,name,colorCode,note]);
@@ -919,7 +920,7 @@ function exportSumarejiCSV(){
           if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:''});
           const _ge=grouped.get(it.itemNo);
           _ge.count++;
-          if((it.custRef||'').toLowerCase().includes('def new prod')){const _src=it.orderNo?(_pnMap.get(it.orderNo.trim())||[]):[];_ge.note=_src.length===1?`def new prod / Replace from ${_src[0].invNumber}-${_src[0].no}`:'def new prod';}
+          if(_isDefReplaceCustRef(it.custRef)){const _src=it.orderNo?(_pnMap.get(it.orderNo.trim())||[]):[];_ge.note=_src.length===1?`def new prod / Replace from ${_src[0].invNumber}-${_src[0].no}`:'def new prod';}
           if(isDsSbCustRef(it.custRef)&&!_dsSbWarnItems.some(w=>w.itemNo===it.itemNo))
             _dsSbWarnItems.push({invId:id,itemNo:it.itemNo,posNo:it.subOf||it.no,name:it.name,custRef:it.custRef||''});
         }
@@ -971,7 +972,7 @@ function exportSumarejiCSV(){
     const _rpg=new Map();
     _partsResolved.forEach(({rootItem,rootInvNumber})=>{
       const rk=rootItem.itemNo;
-      const _note=(rootItem.custRef||'').toLowerCase().includes('def new prod')?`def new prod / Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`:`Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`;
+      const _note=_isDefReplaceCustRef(rootItem.custRef)?`def new prod / Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`:`Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`;
       if(!_rpg.has(rk))_rpg.set(rk,{count:0,name:rootItem.name,posNo:rootItem.subOf||rootItem.no,colorCode:rootItem.colorCode||'',note:_note});
       _rpg.get(rk).count++;
     });
@@ -1021,7 +1022,7 @@ function exportSumarejiCSVById(id){
         if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,unitPrice:it.unitPrice||'',posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:''});
         const _ge=grouped.get(it.itemNo);
         _ge.count++;
-        if((it.custRef||'').toLowerCase().includes('def new prod')){const _src=it.orderNo?(_pnMap.get(it.orderNo.trim())||[]):[];_ge.note=_src.length===1?`def new prod / Replace from ${_src[0].invNumber}-${_src[0].no}`:'def new prod';}
+        if(_isDefReplaceCustRef(it.custRef)){const _src=it.orderNo?(_pnMap.get(it.orderNo.trim())||[]):[];_ge.note=_src.length===1?`def new prod / Replace from ${_src[0].invNumber}-${_src[0].no}`:'def new prod';}
         if(isDsSbCustRef(it.custRef)&&!_dsSbWarnItems.some(w=>w.itemNo===it.itemNo))
           _dsSbWarnItems.push({itemNo:it.itemNo,posNo:it.subOf||it.no,name:it.name,custRef:it.custRef||''});
       }
@@ -1063,7 +1064,7 @@ function exportSumarejiCSVById(id){
       const _rpg=new Map();
       _partsResolved.forEach(({rootItem,rootInvNumber})=>{
         const rk=rootItem.itemNo;
-        const _note=(rootItem.custRef||'').toLowerCase().includes('def new prod')?`def new prod / Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`:`Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`;
+        const _note=_isDefReplaceCustRef(rootItem.custRef)?`def new prod / Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`:`Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`;
         if(!_rpg.has(rk))_rpg.set(rk,{count:0,name:rootItem.name,posNo:rootItem.subOf||rootItem.no,colorCode:rootItem.colorCode||'',note:_note});
         _rpg.get(rk).count++;
       });
