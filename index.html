@@ -469,7 +469,17 @@ function _autoSetRece(items,invNumber){
       if(id===curInvId)continue;
       if((parseInt(inv.number)||0)<curNum)prevCount+=(inv.items||[]).filter(x=>x.orderNo&&x.orderNo.trim()===pnKey).length;
     }
-    const defSorted=defCands.slice().sort((a,b)=>(parseInt(a.invNumber)||0)-(parseInt(b.invNumber)||0));
+    const defSorted=defCands.slice().sort((a,b)=>{
+      const an=parseInt(a.invNumber)||0,bn=parseInt(b.invNumber)||0;
+      if(an!==bn)return an-bn;
+      // Same invoice: sort by item position
+      const aInv=allInvs[a.invId],bInv=allInvs[b.invId];
+      const aIt=aInv?(aInv.items||[]).find(i=>i.no===a.no):null;
+      const bIt=bInv?(bInv.items||[]).find(i=>i.no===b.no):null;
+      if(!aIt||!bIt)return 0;
+      const ap=parseFloat(aIt.subOf||aIt.no)||0,bp=parseFloat(bIt.subOf||bIt.no)||0;
+      return ap-bp||(aIt.subIdx||0)-(bIt.subIdx||0);
+    });
     const globalSlot=prevCount+localSlot;
     if(globalSlot>=defSorted.length)continue;
     const target=defSorted[globalSlot];
