@@ -763,7 +763,7 @@ function _dispRows(inv){
     it.disp?it.disp.charAt(0).toUpperCase()+it.disp.slice(1):''
   ]);
 }
-const DISP_HEADER=['INVOICE NO.','POSITION NO.','ITEM','PN','COLOR/ID','DEFECTIVE PARTS/CONDITIONS','DISPOSITION'];
+const DISP_HEADER=['INVOICE NO.','POSITION NO.','ITEM','RPN','COLOR/ID','DEFECTIVE PARTS/CONDITIONS','DISPOSITION'];
 function _downloadCSV(fname,rows){
   if(typeof Encoding==='undefined'){alert('Encoding library not loaded. Please reload the page.');return;}
   const fs=getCsvFieldSettings();
@@ -3100,7 +3100,7 @@ function render(){
               <button class="disp-btn${it.disp==='sample'?' smp':''}" onclick="setDispInSheet('${it.no}','sample')">Sample</button>`}
               ${isOk
                 ?`<button onclick="defToggleOk('${it.no}')" style="font-size:10px;letter-spacing:1px;color:var(--green);font-weight:600;background:none;border:1px solid var(--green);border-radius:4px;padding:2px 8px;cursor:pointer;font-family:inherit">→ OK &nbsp;UNDO</button>`
-                :(_dsSent?`<input type="tel" value="${esc(it.pn||'')}" placeholder="PN"
+                :(_dsSent?`<input type="tel" value="${esc(it.pn||'')}" placeholder="RPN"
                   style="flex:1;min-width:80px;padding:4px 10px;border:1px solid var(--g200);border-radius:3px;font-size:11px;font-family:monospace;outline:none;background:var(--w);color:var(--k)"
                   oninput="setPnInSheet('${it.no}',this.value)" onclick="event.stopPropagation()">`:it.pn?`<span style="font-family:monospace;font-size:11px;color:var(--g600);padding:4px 6px">${esc(it.pn)}</span>`:'')}
             </div>`;
