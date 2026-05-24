@@ -438,6 +438,57 @@ function defToggleOk(no){
   _defSw.openNo=null;
   render();
 }
+// Auto-set receiving:true on matched defective items when replacement items are marked OK
+function _autoSetRece(items,invNumber){
+  if(!invNumber)return;
+  const _pnMap=buildPnMap();
+  const om=buildOrderNoMap();
+  const toProcess=items.filter(it=>{
+    const k=(it.orderNo||'').trim();
+    if(!k||!_pnMap.has(k))return false;
+    const tag=getDnpSc(k,om);
+    return tag!=='DS'&&tag!=='SB';
+  });
+  if(!toProcess.length)return;
+  const allInvs={};
+  loadList().forEach(e=>{try{const d=localStorage.getItem('mykita_dc_inv_'+e.id);if(!d)return;const inv=JSON.parse(d);allInvs[e.id]=inv;}catch(x){}});
+  const curInvId=Object.keys(allInvs).find(id=>allInvs[id].number===invNumber);
+  if(!curInvId)return;
+  const _sp=arr=>arr.slice().sort((a,b)=>{const an=parseFloat(a.subOf||a.no)||0,bn=parseFloat(b.subOf||b.no)||0;return an-bn||(a.subIdx||0)-(b.subIdx||0);});
+  const curNum=parseInt(invNumber)||0;
+  const toSave={};
+  for(const it of toProcess){
+    const pnKey=(it.orderNo||'').trim();
+    const defCands=_pnMap.get(pnKey)||[];
+    if(!defCands.length)continue;
+    const curMatches=_sp((allInvs[curInvId].items||[]).filter(x=>x.orderNo&&x.orderNo.trim()===pnKey));
+    const localSlot=curMatches.findIndex(m=>m.no===it.no);
+    if(localSlot<0)continue;
+    let prevCount=0;
+    for(const [id,inv] of Object.entries(allInvs)){
+      if(id===curInvId)continue;
+      if((parseInt(inv.number)||0)<curNum)prevCount+=(inv.items||[]).filter(x=>x.orderNo&&x.orderNo.trim()===pnKey).length;
+    }
+    const defSorted=defCands.slice().sort((a,b)=>(parseInt(a.invNumber)||0)-(parseInt(b.invNumber)||0));
+    const globalSlot=prevCount+localSlot;
+    if(globalSlot>=defSorted.length)continue;
+    const target=defSorted[globalSlot];
+    const tId=target.invId;
+    if(!allInvs[tId])continue;
+    if(!toSave[tId])toSave[tId]=JSON.parse(JSON.stringify(allInvs[tId]));
+    const tItem=toSave[tId].items.find(i=>i.no===target.no);
+    if(!tItem||tItem.receiving)continue;
+    toSave[tId].items=toSave[tId].items.map(i=>i.no!==target.no?i:{...i,receiving:true,receivingDate:invNumber});
+  }
+  if(!Object.keys(toSave).length)return;
+  const list=loadList();
+  for(const [invId,inv] of Object.entries(toSave)){
+    localStorage.setItem('mykita_dc_inv_'+invId,JSON.stringify(inv));
+    const idx=list.findIndex(e=>e.id===invId);
+    if(idx>=0)list[idx].receCount=inv.items.filter(it=>it.status==='defective'&&it.receiving).length;
+  }
+  saveList(list);
+}
 function openDispSheet(id){
   try{
     const d=localStorage.getItem('mykita_dc_inv_'+id);
@@ -1854,6 +1905,7 @@ function _onPickerClick(no,e){
 }
 function cycle(no){
   if(checkArchived())return;
+  let _newOkItem=null;
   S.invoice.items=S.invoice.items.map(it=>{
     if(it.no!==no)return it;
     const prev=it.status;
@@ -1868,9 +1920,12 @@ function cycle(no){
       );
       it=syncRemark({...it,defects:cleaned.length?cleaned:[it.defects[0]]});
     }
+    if(next==='ok'&&it.orderNo)_newOkItem=it;
     return{...it,status:next};
   });
-  save();render();
+  save();
+  if(_newOkItem&&S.invoice.number)_autoSetRece([_newOkItem],S.invoice.number);
+  render();
 }
 function toggleGrp(subOf){S.grpCollapsed[subOf]=!S.grpCollapsed[subOf];render();}
 function toggleSmDone(no){
@@ -1884,12 +1939,16 @@ function bulkOk(subOf){
   const allOk=grpItems.every(it=>it.status==='ok');
   // Toggle: if all are ok, reset to pending; otherwise set all to ok
   const next=allOk?'pending':'ok';
+  const _newOkItems=[];
   S.invoice.items=S.invoice.items.map(it=>{
     if(it.subOf!==subOf)return it;
     if(it.status==='defective')delete S.pickerOpen[it.no];
+    if(next==='ok'&&it.orderNo)_newOkItems.push(it);
     return {...it,status:next};
   });
-  save();render();
+  save();
+  if(_newOkItems.length&&S.invoice.number)_autoSetRece(_newOkItems,S.invoice.number);
+  render();
 }
 function togglePicker(no){
   if(checkArchived())return;
