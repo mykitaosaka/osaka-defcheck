@@ -1014,7 +1014,8 @@ function exportSumarejiCSV(){
   const receFiltered=receAll.filter(({it})=>!grouped.has(it.itemNo)&&!_resolvedRootNos.has(it.itemNo));
   if(receFiltered.length){
     _appendReceToRows(rows,receFiltered);_receAdded=true;
-    alert('CustRefがdef new prodのアイテムをリストに追加しました。');
+    const lines=receFiltered.map(({it,invNumber})=>`・${it.name||it.itemNo} (${invNumber}-${it.subOf||it.no})`).join('\n');
+    alert('CustRefがdef new prodのアイテムをリストに追加しました。\n\n'+lines);
   }
   // Resolved PARTS: automatically add with root item data (no warning)
   if(_partsResolved.length){
@@ -1104,7 +1105,8 @@ function exportSumarejiCSVById(id){
     const receFiltered=receItems.filter(({it})=>!grouped.has(it.itemNo)&&!_resolvedRootNos.has(it.itemNo));
     if(receFiltered.length){
       _appendReceToRows(rows,receFiltered);_receAdded=true;
-      alert('CustRefがdef new prodのアイテムをリストに追加しました。');
+      const lines=receFiltered.map(({it,invNumber})=>`・${it.name||it.itemNo} (${invNumber}-${it.subOf||it.no})`).join('\n');
+      alert('CustRefがdef new prodのアイテムをリストに追加しました。\n\n'+lines);
     }
     // Resolved PARTS: automatically add with root item data (no warning)
     if(_partsResolved.length){
