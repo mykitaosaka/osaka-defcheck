@@ -957,7 +957,6 @@ function exportSumarejiCSV(){
   const grouped=new Map();
   const invNums=[];
   const _pnMap=buildPnMap();
-  const _partsWarnAll=[];
   const _partsResolved=[];
   const _dsSbWarnItems=[];
   S.csvSelIds.forEach(id=>{
@@ -981,7 +980,6 @@ function exportSumarejiCSV(){
         if(it.cat==='parts'&&it.status==='ok'&&!it.smDone&&it.orderNo&&_pnMap.has(it.orderNo.trim())){
           const _root=_findPartsRoot(it.orderNo.trim(),_pnMap);
           if(_root&&_root.item.receiving!==false)_partsResolved.push({partsIt:it,rootItem:_root.item,rootInvNumber:_root.invNumber});
-          else _partsWarnAll.push(it);
         }
       });
     }catch(e){}
@@ -1030,18 +1028,6 @@ function exportSumarejiCSV(){
     _receAdded=true;
   }
   // Unresolved PARTS: warn (only when RECE was added or no RECE items)
-  if(_partsWarnAll.length&&(_receAdded||!receAll.length)){
-    const _pg=new Map();
-    _partsWarnAll.forEach(it=>{
-      if(!_pg.has(it.itemNo))_pg.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||''});
-      _pg.get(it.itemNo).count++;
-    });
-    for(const [itemNo,{count,name,posNo,colorCode}] of _pg){
-      rows.push([itemNo,count,'',posNo,name,colorCode,'PARTS - 要手入力修正']);
-    }
-    const _wl=_partsWarnAll.map(it=>`・${it.subOf||it.no}. ${it.name||it.itemNo}`).join('\n');
-    alert('⚠️ 以下のアイテムは元となるアイテムとの照合ができませんでした。\nダウンロード後に手入力で修正してください。\n\n'+_wl);
-  }
   if(!rows.length){alert('No data to export.');return;}
   if(typeof Encoding==='undefined'){alert('Encoding library not loaded. Please reload the page.');return;}
   const csvText=['商品コード,検品数,原価（税抜）,行番号,商品名,カラー番号,その他',..._applySmMask(rows).map(r=>r.join(','))].join('\r\n');
@@ -1064,7 +1050,6 @@ function exportSumarejiCSVById(id){
     const inv=JSON.parse(d);
     const grouped=new Map();
     const _pnMap=buildPnMap();
-    const _partsWarn=[];
     const _partsResolved=[];
     const _dsSbWarnItems=[];
     inv.items.forEach(it=>{
@@ -1079,7 +1064,6 @@ function exportSumarejiCSVById(id){
       if(it.cat==='parts'&&it.status==='ok'&&!it.smDone&&it.orderNo&&_pnMap.has(it.orderNo.trim())){
         const _root=_findPartsRoot(it.orderNo.trim(),_pnMap);
         if(_root&&_root.item.receiving!==false)_partsResolved.push({partsIt:it,rootItem:_root.item,rootInvNumber:_root.invNumber});
-        else _partsWarn.push(it);
       }
     });
     const rows=[];
@@ -1121,18 +1105,6 @@ function exportSumarejiCSVById(id){
       _receAdded=true;
     }
     // Unresolved PARTS: warn
-    if(_partsWarn.length&&(_receAdded||!receItems.length)){
-      const _pg=new Map();
-      _partsWarn.forEach(it=>{
-        if(!_pg.has(it.itemNo))_pg.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||''});
-        _pg.get(it.itemNo).count++;
-      });
-      for(const [itemNo,{count,name,posNo,colorCode}] of _pg){
-        rows.push([itemNo,count,'',posNo,name,colorCode,'PARTS - 要手入力修正']);
-      }
-      const _wl=_partsWarn.map(it=>`・${it.subOf||it.no}. ${it.name||it.itemNo}`).join('\n');
-      alert('⚠️ 以下のアイテムは元となるアイテムとの照合ができませんでした。\nダウンロード後に手入力で修正してください。\n\n'+_wl);
-    }
     if(!rows.length){alert('No data to export.');return;}
     if(typeof Encoding==='undefined'){alert('Encoding library not loaded. Please reload the page.');return;}
     const csvText=['商品コード,検品数,原価（税抜）,行番号,商品名,カラー番号,その他',..._applySmMask(rows).map(r=>r.join(','))].join('\r\n');
