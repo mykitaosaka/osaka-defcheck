@@ -1020,7 +1020,7 @@ function exportSumarejiCSV(){
     const _rpg=new Map();
     _partsResolved.forEach(({rootItem,rootInvNumber})=>{
       const rk=rootItem.itemNo;
-      const _tag=_getDefReplaceTag(rootItem.custRef);const _note=_tag?`現INV外 / ${_tag} / Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`:`現INV外 / Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`;
+      const _tag=_getDefReplaceTag(rootItem.custRef);const _note=_tag?`${_tag} / Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`:`Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`;
       if(!_rpg.has(rk))_rpg.set(rk,{count:0,name:rootItem.name,posNo:rootItem.subOf||rootItem.no,colorCode:rootItem.colorCode||'',note:_note});
       _rpg.get(rk).count++;
     });
@@ -1097,7 +1097,7 @@ function exportSumarejiCSVById(id){
       const _rpg=new Map();
       _partsResolved.forEach(({rootItem,rootInvNumber})=>{
         const rk=rootItem.itemNo;
-        const _tag=_getDefReplaceTag(rootItem.custRef);const _note=_tag?`現INV外 / ${_tag} / Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`:`現INV外 / Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`;
+        const _tag=_getDefReplaceTag(rootItem.custRef);const _note=_tag?`${_tag} / Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`:`Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`;
         if(!_rpg.has(rk))_rpg.set(rk,{count:0,name:rootItem.name,posNo:rootItem.subOf||rootItem.no,colorCode:rootItem.colorCode||'',note:_note});
         _rpg.get(rk).count++;
       });
