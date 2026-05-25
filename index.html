@@ -980,7 +980,7 @@ function exportSumarejiCSV(){
       inv.items.forEach(it=>{
         if(it.cat==='parts'&&it.status==='ok'&&!it.smDone&&it.orderNo&&_pnMap.has(it.orderNo.trim())){
           const _root=_findPartsRoot(it.orderNo.trim(),_pnMap);
-          if(_root)_partsResolved.push({partsIt:it,rootItem:_root.item,rootInvNumber:_root.invNumber});
+          if(_root&&_root.item.receiving!==false)_partsResolved.push({partsIt:it,rootItem:_root.item,rootInvNumber:_root.invNumber});
           else _partsWarnAll.push(it);
         }
       });
@@ -1078,7 +1078,7 @@ function exportSumarejiCSVById(id){
       }
       if(it.cat==='parts'&&it.status==='ok'&&!it.smDone&&it.orderNo&&_pnMap.has(it.orderNo.trim())){
         const _root=_findPartsRoot(it.orderNo.trim(),_pnMap);
-        if(_root)_partsResolved.push({partsIt:it,rootItem:_root.item,rootInvNumber:_root.invNumber});
+        if(_root&&_root.item.receiving!==false)_partsResolved.push({partsIt:it,rootItem:_root.item,rootInvNumber:_root.invNumber});
         else _partsWarn.push(it);
       }
     });
