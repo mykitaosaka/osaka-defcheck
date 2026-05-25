@@ -1015,7 +1015,7 @@ function exportSumarejiCSV(){
   if(receFiltered.length){
     _appendReceToRows(rows,receFiltered);_receAdded=true;
     const lines=receFiltered.map(({it,invNumber})=>`・${it.name||it.itemNo} (${invNumber}-${it.subOf||it.no})`).join('\n');
-    alert('CustRefがdef new prodのアイテムをリストに追加しました。\n\n'+lines);
+    alert('def new prod(Replacement)のPARTSアイテムをリストに追加しました。\n除外する場合はダウンロードしたCSVを直接編集するか、RPN SEARCH で INVで入庫 ボタンをオフにしてください。\n\n'+lines);
   }
   // Resolved PARTS: automatically add with root item data (no warning)
   if(_partsResolved.length){
@@ -1106,7 +1106,7 @@ function exportSumarejiCSVById(id){
     if(receFiltered.length){
       _appendReceToRows(rows,receFiltered);_receAdded=true;
       const lines=receFiltered.map(({it,invNumber})=>`・${it.name||it.itemNo} (${invNumber}-${it.subOf||it.no})`).join('\n');
-      alert('CustRefがdef new prodのアイテムをリストに追加しました。\n\n'+lines);
+      alert('def new prod(Replacement)のPARTSアイテムをリストに追加しました。\n除外する場合はダウンロードしたCSVを直接編集するか、RPN SEARCH で INVで入庫 ボタンをオフにしてください。\n\n'+lines);
     }
     // Resolved PARTS: automatically add with root item data (no warning)
     if(_partsResolved.length){
