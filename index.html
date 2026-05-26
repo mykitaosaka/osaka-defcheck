@@ -622,7 +622,7 @@ function parseMsgForPns(raw){
   const results=[];
   for(let i=1;i<blocks.length;i++){
     const block=blocks[i];
-    const posMatch=block.match(/^\s*(\d+)\./);
+    const posMatch=block.match(/^(?:\s|<[^>]+>|&nbsp;)*(\d+)\./);
     if(!posMatch)continue;
     const pos=posMatch[1];
     const pnMatch=block.match(/[Rr]eplacement[\s\S]{0,400}?<b[^>]*>\s*(\d{6,7})\s*<\/b>/i);
