@@ -932,13 +932,14 @@ function _appendReceToRows(rows,receItems,partsOrderNos){
   receItems.forEach(({it,invNumber})=>{
     const _ext=!(partsOrderNos&&it.pn&&partsOrderNos.has(it.pn.trim()));
     const _base=`Replace from ${invNumber}-${it.subOf||it.no}`;
-    if(!g.has(it.itemNo))g.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:_ext?`現INV外 / ${_base}`:_base});
+    const _cat=_ext?it.cat.toUpperCase():`${it.cat.toUpperCase()}→PARTS`;
+    if(!g.has(it.itemNo))g.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:_ext?`現INV外 / ${_base}`:_base,cat:_cat});
     const _ge=g.get(it.itemNo);
     _ge.count++;
     {const _tag=_getDefReplaceTag(it.custRef);if(_tag)_ge.note=_ext?`現INV外 / ${_tag} / ${_base}`:`${_tag} / ${_base}`;}
   });
-  for(const [itemNo,{count,name,posNo,colorCode,note}] of g){
-    rows.push([itemNo,count,'',posNo,name,colorCode,note]);
+  for(const [itemNo,{count,name,posNo,colorCode,note,cat}] of g){
+    rows.push([itemNo,count,'',posNo,name,colorCode,note,cat]);
   }
 }
 function _findPartsRoot(orderNo,_pnMap){
@@ -970,7 +971,7 @@ function exportSumarejiCSV(){
       if(inv.number)invNums.push(inv.number);
       inv.items.forEach(it=>{
         if((it.cat==='rx'||it.cat==='sun')&&it.status==='ok'&&!it.smDone){
-          if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:''});
+          if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:'',cat:it.cat.toUpperCase()});
           const _ge=grouped.get(it.itemNo);
           _ge.count++;
           {const _tag=_getDefReplaceTag(it.custRef);if(_tag){const _src=it.orderNo?(_pnMap.get(it.orderNo.trim())||[]):[];_ge.note=_src.length===1?`${_tag} / Replace from ${_src[0].invNumber}-${_src[0].no}`:_tag;}}
@@ -989,11 +990,11 @@ function exportSumarejiCSV(){
     }catch(e){}
   });
   const rows=[];
-  for(const [itemNo,{count,name,unitPrice,posNo,colorCode,note}] of grouped){
+  for(const [itemNo,{count,name,unitPrice,posNo,colorCode,note,cat}] of grouped){
     if(count>=getSmQtyAlert()){
       if(!confirm('Item No: '+itemNo+'\nName: '+name+'\nQty: '+count+'\n\nQuantity is 10 or more. Include in CSV?\nOK = Include\nCancel = Skip'))continue;
     }
-    rows.push([itemNo,count,unitPrice,posNo,name,colorCode,note||'']);
+    rows.push([itemNo,count,unitPrice,posNo,name,colorCode,note||'',cat||'']);
   }
   if(_dsSbWarnItems.length){
     const _wl=_dsSbWarnItems.map(w=>`・${w.posNo}. ${w.name} (${w.custRef})`).join('\n');
@@ -1025,16 +1026,16 @@ function exportSumarejiCSV(){
     _partsResolved.forEach(({rootItem,rootInvNumber})=>{
       const rk=rootItem.itemNo;
       const _tag=_getDefReplaceTag(rootItem.custRef);const _note=_tag?`${_tag} / Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`:`Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`;
-      if(!_rpg.has(rk))_rpg.set(rk,{count:0,name:rootItem.name,posNo:rootItem.subOf||rootItem.no,colorCode:rootItem.colorCode||'',note:_note});
+      if(!_rpg.has(rk))_rpg.set(rk,{count:0,name:rootItem.name,posNo:rootItem.subOf||rootItem.no,colorCode:rootItem.colorCode||'',note:_note,cat:`${rootItem.cat.toUpperCase()}→PARTS`});
       _rpg.get(rk).count++;
     });
-    for(const [itemNo,{count,name,posNo,colorCode,note}] of _rpg){rows.push([itemNo,count,'',posNo,name,colorCode,note]);}
+    for(const [itemNo,{count,name,posNo,colorCode,note,cat}] of _rpg){rows.push([itemNo,count,'',posNo,name,colorCode,note,cat]);}
     _receAdded=true;
   }
   // Unresolved PARTS: warn (only when RECE was added or no RECE items)
   if(!rows.length){alert('No data to export.');return;}
   if(typeof Encoding==='undefined'){alert('Encoding library not loaded. Please reload the page.');return;}
-  const csvText=['商品コード,検品数,原価（税抜）,行番号,商品名,カラー番号,その他',..._applySmMask(rows).map(r=>r.join(','))].join('\r\n');
+  const csvText=['商品コード,検品数,原価（税抜）,行番号,商品名,カラー番号,その他,カテゴリ',..._applySmMask(rows).map(r=>r.join(','))].join('\r\n');
   const arr=Encoding.convert(Encoding.stringToCode(csvText),'SJIS','UNICODE');
   const blob=new Blob([new Uint8Array(arr)],{type:'text/csv;charset=shift_jis'});
   const url=URL.createObjectURL(blob);
@@ -1059,7 +1060,7 @@ function exportSumarejiCSVById(id){
     const _dsSbWarnItems=[];
     inv.items.forEach(it=>{
       if((it.cat==='rx'||it.cat==='sun')&&it.status==='ok'&&!it.smDone){
-        if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,unitPrice:it.unitPrice||'',posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:''});
+        if(!grouped.has(it.itemNo))grouped.set(it.itemNo,{count:0,name:it.name,unitPrice:it.unitPrice||'',posNo:it.subOf||it.no,colorCode:it.colorCode||'',note:'',cat:it.cat.toUpperCase()});
         const _ge=grouped.get(it.itemNo);
         _ge.count++;
         {const _tag=_getDefReplaceTag(it.custRef);if(_tag){const _src=it.orderNo?(_pnMap.get(it.orderNo.trim())||[]):[];_ge.note=_src.length===1?`${_tag} / Replace from ${_src[0].invNumber}-${_src[0].no}`:_tag;}}
@@ -1073,11 +1074,11 @@ function exportSumarejiCSVById(id){
       }
     });
     const rows=[];
-    for(const [itemNo,{count,name,posNo,colorCode,note}] of grouped){
+    for(const [itemNo,{count,name,unitPrice,posNo,colorCode,note,cat}] of grouped){
       if(count>=getSmQtyAlert()){
         if(!confirm('Item No: '+itemNo+'\nName: '+name+'\nQty: '+count+'\n\nQuantity is 10 or more. Include in CSV?\nOK = Include\nCancel = Skip'))continue;
       }
-      rows.push([itemNo,count,'',posNo,name,colorCode,note||'']);
+      rows.push([itemNo,count,unitPrice,posNo,name,colorCode,note||'',cat||'']);
     }
     if(_dsSbWarnItems.length){
       const _wl=_dsSbWarnItems.map(w=>`・${w.posNo}. ${w.name} (${w.custRef})`).join('\n');
@@ -1104,16 +1105,16 @@ function exportSumarejiCSVById(id){
       _partsResolved.forEach(({rootItem,rootInvNumber})=>{
         const rk=rootItem.itemNo;
         const _tag=_getDefReplaceTag(rootItem.custRef);const _note=_tag?`${_tag} / Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`:`Replace from ${rootInvNumber}-${rootItem.subOf||rootItem.no}`;
-        if(!_rpg.has(rk))_rpg.set(rk,{count:0,name:rootItem.name,posNo:rootItem.subOf||rootItem.no,colorCode:rootItem.colorCode||'',note:_note});
+        if(!_rpg.has(rk))_rpg.set(rk,{count:0,name:rootItem.name,posNo:rootItem.subOf||rootItem.no,colorCode:rootItem.colorCode||'',note:_note,cat:`${rootItem.cat.toUpperCase()}→PARTS`});
         _rpg.get(rk).count++;
       });
-      for(const [itemNo,{count,name,posNo,colorCode,note}] of _rpg){rows.push([itemNo,count,'',posNo,name,colorCode,note]);}
+      for(const [itemNo,{count,name,posNo,colorCode,note,cat}] of _rpg){rows.push([itemNo,count,'',posNo,name,colorCode,note,cat]);}
       _receAdded=true;
     }
     // Unresolved PARTS: warn
     if(!rows.length){alert('No data to export.');return;}
     if(typeof Encoding==='undefined'){alert('Encoding library not loaded. Please reload the page.');return;}
-    const csvText=['商品コード,検品数,原価（税抜）,行番号,商品名,カラー番号,その他',..._applySmMask(rows).map(r=>r.join(','))].join('\r\n');
+    const csvText=['商品コード,検品数,原価（税抜）,行番号,商品名,カラー番号,その他,カテゴリ',..._applySmMask(rows).map(r=>r.join(','))].join('\r\n');
     const arr=Encoding.convert(Encoding.stringToCode(csvText),'SJIS','UNICODE');
     const blob=new Blob([new Uint8Array(arr)],{type:'text/csv;charset=shift_jis'});
     const url=URL.createObjectURL(blob);
@@ -2937,7 +2938,7 @@ function render(){
         </button>
         ${_settingsShowCsvFields?(()=>{
           const defLabels=['A: INVOICE NO.','B: POSITION NO.','C: ITEM','D: RPN','E: COLOR/ID','F: DEFECTIVE PARTS/CONDITIONS','G: DISPOSITION'];
-          const smLabels=['A: 商品コード','B: 検品数','C: 原価（税抜） (default OFF)','D: 行番号 (default OFF)','E: 商品名 (default OFF)','F: カラー番号 (default OFF)','G: その他 (自動)'];
+          const smLabels=['A: 商品コード','B: 検品数','C: 原価（税抜） (default OFF)','D: 行番号 (default OFF)','E: 商品名 (default OFF)','F: カラー番号 (default OFF)','G: その他 (自動)','H: カテゴリ (自動)'];
           const fs=getCsvFieldSettings();const ss=getSmFieldSettings();
           const toggle=(lbl,on,fn)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--g100)">
               <span style="font-size:11px;color:${on?'var(--g800)':'var(--g400)'}">${lbl}</span>
