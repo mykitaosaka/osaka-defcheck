@@ -1342,7 +1342,7 @@ async function gistPush(){
       localStorage.setItem(GK_ID,data.id);
     }
     localStorage.setItem(GK_AT,new Date().toISOString());
-    _markClean();_syncSt='ok';
+    _markClean();if(_invoiceSnap&&S.invoice)_invoiceSnap=JSON.stringify(S.invoice);_syncSt='ok';
     const finalId=gistId||data.id;
     const pushedInvCount=Object.keys(invFiles).filter(k=>k.startsWith('inv_')).length;
     _syncMsg='Push完了 (Gist: '+(finalId?finalId.slice(0,8)+'…':'new')+' / リスト: '+mergedList.length+'件 / invファイル: '+pushedInvCount+'個)';
