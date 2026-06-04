@@ -308,7 +308,7 @@ const STATS=['pending','ok','defective','warranty'];
 const CYCLE_STATS=['pending','defective','ok'];
 const SLBL={pending:'—',ok:'OK',defective:'D',warranty:'W'};
 const SCLS={pending:'',ok:'ok',defective:'def',warranty:'war'};
-let S={screen:'home',loading:false,rawText:'',parseErr:'',invoiceId:null,invoice:null,showEmail:false,emailTo:'',emailSubj:'',emailBody:'',filter:'ALL',tagFilter:[],pickerOpen:{},partDetailOpen:{},grpCollapsed:{},showArchive:false,showSettings:false,showXlsxSel:false,xlsxSelIds:null,showCsvSel:false,csvSelIds:null,showCsvPicker:false,csvPickerId:null,showLeavePrompt:false,homeSort:'created',homeSortDir:'desc',pushing:false,homeSearch:'',itemSearch:'',uploadDate:''};
+let S={screen:'home',loading:false,rawText:'',parseErr:'',invoiceId:null,invoice:null,showEmail:false,emailTo:'',emailSubj:'',emailBody:'',filter:'ALL',tagFilter:[],pickerOpen:{},partDetailOpen:{},grpCollapsed:{},showArchive:false,showSettings:false,showXlsxSel:false,xlsxSelIds:null,showCsvSel:false,csvSelIds:null,showCsvPicker:false,csvPickerId:null,showLeavePrompt:false,homeSort:'created',homeSortDir:'desc',pushing:false,homeSearch:'',homeItemSearch:'',itemSearch:'',uploadDate:''};
 let _sw={state:null,openId:null,openDir:null,moved:false};
 let _dispSheet=null,_dispOrigDisp={},_dispOrigPn={},_dispOrigReceiving={},_dispOrigRecDate={},_dispOrigRemark={};
 let _recDatePicker=null;
@@ -1459,6 +1459,16 @@ function setDisp(no,val){
   save();render();
 }
 
+function _itemSearchHits(invId,query){
+  if(!query)return[];
+  try{
+    const d=localStorage.getItem('mykita_dc_inv_'+invId);
+    if(!d)return[];
+    const inv=JSON.parse(d);
+    const words=query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    return inv.items.filter(it=>it.name&&words.every(w=>it.name.toLowerCase().includes(w)));
+  }catch(e){return[];}
+}
 function _applyItemSearch(){
   const q=(S.itemSearch||'').toLowerCase().trim();
   const words=q?q.split(/\s+/).filter(Boolean):[];
@@ -1552,7 +1562,7 @@ function deleteInvoice(id){
   if(S.invoiceId===id){S.invoiceId=null;S.invoice=null;S.screen='home';}
   render();
 }
-function invCardHtml(e,isArchived){
+function invCardHtml(e,isArchived,hits){
   const tot=e.tot||0;
   const pend=e.pend||0;
   const checked=tot-pend;
@@ -1592,6 +1602,7 @@ function invCardHtml(e,isArchived){
             ?`${e.dispTotal>0?`<button id="disp-btn-${e.id}" class="inv-card-act-btn" style="border-color:var(--teal);color:var(--teal)" onclick="event.stopPropagation();openDispSheet('${e.id}')">DISP ${e.dispSet||0}/${e.dispTotal}</button>`:''}${e.receCount?`<button class="inv-card-act-btn" style="border-color:var(--blue);color:var(--blue)" onclick="event.stopPropagation();openDispSheet('${e.id}')">RECE ${e.receCount}</button>`:''}`
             :`<button class="inv-card-act-btn" style="border-color:var(--red);color:var(--red)" onclick="event.stopPropagation();openDefSheet('${e.id}')">DEF LIST</button>`}
         </div>`:''}
+        ${hits&&hits.length?`<div style="margin-top:7px;padding-top:6px;border-top:1px solid var(--g100)">${hits.slice(0,5).map(it=>`<div style="font-size:10px;color:var(--g500);line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="color:var(--g300);margin-right:3px">${esc(it.subOf||it.no)}.</span>${esc(it.name)}</div>`).join('')}${hits.length>5?`<div style="font-size:10px;color:var(--g400)">+${hits.length-5} 件</div>`:''}</div>`:''}
       </div>
       <div class="inv-card-arr">›</div>
     </div>
@@ -2475,8 +2486,11 @@ function render(){
     };
     const _fuzzy=(e,q)=>!q||e.number.toLowerCase().replace(/\s/g,'').includes(q.toLowerCase().replace(/\s/g,''));
     const q=S.homeSearch.trim();
-    const sortActive=_sort(list.filter(e=>!e.archived&&_fuzzy(e,q)));
-    const archived=_sort(list.filter(e=>e.archived&&_fuzzy(e,q)));
+    const iq=S.homeItemSearch.trim();
+    const _hitsMap=iq?new Map(list.map(e=>[e.id,_itemSearchHits(e.id,iq)])):null;
+    const _matches=e=>_fuzzy(e,q)&&(!iq||(_hitsMap.get(e.id)||[]).length>0);
+    const sortActive=_sort(list.filter(e=>!e.archived&&_matches(e)));
+    const archived=_sort(list.filter(e=>e.archived&&_matches(e)));
     const dirArrow=S.homeSortDir==='asc'?'↑':'↓';
     const sortBtns=[['number','No.'],['created','作成日'],['updated','更新日']].map(([v,l])=>{
       const active=S.homeSort===v;
@@ -2493,15 +2507,21 @@ function render(){
           style="width:100%;padding:9px 32px 9px 12px;border:1px solid var(--g200);border-radius:4px;font-size:12px;font-family:inherit;background:var(--g50);outline:none;color:var(--g800);box-sizing:border-box">
         ${q?`<button onclick="S.homeSearch='';render()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--g400);font-size:16px;line-height:1;padding:2px">×</button>`:''}
       </div>
+      <div style="margin:6px 20px 0;position:relative">
+        <input type="text" value="${esc(S.homeItemSearch)}" placeholder="アイテム名を検索…"
+          oninput="S.homeItemSearch=this.value;render()"
+          style="width:100%;padding:9px 32px 9px 12px;border:1px solid ${iq?'var(--k)':'var(--g200)'};border-radius:4px;font-size:12px;font-family:inherit;background:var(--g50);outline:none;color:var(--g800);box-sizing:border-box">
+        ${iq?`<button onclick="S.homeItemSearch='';render()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--g400);font-size:16px;line-height:1;padding:2px">×</button>`:''}
+      </div>
       ${sortActive.length
-        ?`<div class="home-sec" style="display:flex;align-items:center;justify-content:space-between"><span>ACTIVE${q?' ('+sortActive.length+'件)':''}</span><div style="display:flex;gap:6px">${sortBtns}</div></div>${sortActive.map(e=>invCardHtml(e,false)).join('')}`
-        :`<div style="text-align:center;padding:40px 20px;font-size:10px;color:var(--g400);letter-spacing:1px">${q?'該当するインボイスがありません':'インボイスがありません'}</div>`
+        ?`<div class="home-sec" style="display:flex;align-items:center;justify-content:space-between"><span>ACTIVE${(q||iq)?' ('+sortActive.length+'件)':''}</span><div style="display:flex;gap:6px">${sortBtns}</div></div>${sortActive.map(e=>invCardHtml(e,false,_hitsMap?(_hitsMap.get(e.id)||null):null)).join('')}`
+        :`<div style="text-align:center;padding:40px 20px;font-size:10px;color:var(--g400);letter-spacing:1px">${(q||iq)?'該当するインボイスがありません':'インボイスがありません'}</div>`
       }
       ${archived.length?`
         <div class="home-sec" onclick="S.showArchive=!S.showArchive;render()">
           ARCHIVED (${archived.length}) <span style="font-size:11px">${S.showArchive?'▲':'▼'}</span>
         </div>
-        ${S.showArchive?archived.map(e=>invCardHtml(e,true)).join(''):''}
+        ${S.showArchive?archived.map(e=>invCardHtml(e,true,_hitsMap?(_hitsMap.get(e.id)||null):null)).join(''):''}
       `:q?`<div class="home-sec">ARCHIVED (0)</div>`:''}`;
   }
 
