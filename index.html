@@ -629,7 +629,8 @@ function parseMsgForPns(raw){
     const claimMatch=block.match(/postal\s+claim[:\s]+(?:<[^>]+>)*\s*(\d{5,12})/i);
     const pn=pnMatch?pnMatch[1]:'';
     const claimNo=claimMatch?claimMatch[1]:'';
-    if(pn||claimNo)results.push({pos,pn,claimNo});
+    const isReturn=/please\s+return\b/i.test(block)||/Replacement\s+Order\s+Number\s*:\s*(?:<[^>]+>|&nbsp;|\s)*NONE\b/i.test(block);
+    if(pn||claimNo||isReturn)results.push({pos,pn,claimNo,disp:isReturn?'return':''});
   }
   return results;
 }
