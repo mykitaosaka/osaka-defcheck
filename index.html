@@ -1485,6 +1485,26 @@ function _applyPnNameSearch(){
     el.style.display=(!words.length||words.every(w=>name.includes(w)))?'':'none';
   });
 }
+function _applyHomeItemSearch(){
+  const iq=(S.homeItemSearch||'').trim();
+  document.querySelectorAll('.inv-swipe-wrap[data-id]').forEach(wrap=>{
+    const id=wrap.dataset.id;
+    const hits=iq?_itemSearchHits(id,iq):[];
+    wrap.style.display=(!iq||hits.length)?'':'none';
+    const hitsDiv=wrap.querySelector('.inv-home-hits');
+    if(hitsDiv){
+      if(hits.length){
+        hitsDiv.innerHTML='<div style="margin-top:7px;padding-top:6px;border-top:1px solid var(--g100)">'+hits.slice(0,5).map(it=>'<div style="font-size:10px;color:var(--g500);line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="color:var(--g300);margin-right:3px">'+esc(it.subOf||it.no)+'.</span>'+esc(it.name)+'</div>').join('')+(hits.length>5?'<div style="font-size:10px;color:var(--g400)">+'+( hits.length-5)+' 件</div>':'')+'</div>';
+      }else{
+        hitsDiv.innerHTML='';
+      }
+    }
+  });
+  const inp=document.getElementById('home-item-search');
+  if(inp)inp.style.borderColor=iq?'var(--k)':'var(--g200)';
+  const clr=document.getElementById('home-item-search-clear');
+  if(clr)clr.style.display=iq?'block':'none';
+}
 function _onItemSearch(val){S.itemSearch=val;_applyItemSearch();}
 function newDefect(){return {part:'',partOther:null,partDetail:null,side:'',cond:[],condOther:null};}
 function togglePartDetailOpen(no,idx){
@@ -1562,7 +1582,7 @@ function deleteInvoice(id){
   if(S.invoiceId===id){S.invoiceId=null;S.invoice=null;S.screen='home';}
   render();
 }
-function invCardHtml(e,isArchived,hits){
+function invCardHtml(e,isArchived){
   const tot=e.tot||0;
   const pend=e.pend||0;
   const checked=tot-pend;
@@ -1602,7 +1622,7 @@ function invCardHtml(e,isArchived,hits){
             ?`${e.dispTotal>0?`<button id="disp-btn-${e.id}" class="inv-card-act-btn" style="border-color:var(--teal);color:var(--teal)" onclick="event.stopPropagation();openDispSheet('${e.id}')">DISP ${e.dispSet||0}/${e.dispTotal}</button>`:''}${e.receCount?`<button class="inv-card-act-btn" style="border-color:var(--blue);color:var(--blue)" onclick="event.stopPropagation();openDispSheet('${e.id}')">RECE ${e.receCount}</button>`:''}`
             :`<button class="inv-card-act-btn" style="border-color:var(--red);color:var(--red)" onclick="event.stopPropagation();openDefSheet('${e.id}')">DEF LIST</button>`}
         </div>`:''}
-        ${hits&&hits.length?`<div style="margin-top:7px;padding-top:6px;border-top:1px solid var(--g100)">${hits.slice(0,5).map(it=>`<div style="font-size:10px;color:var(--g500);line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="color:var(--g300);margin-right:3px">${esc(it.subOf||it.no)}.</span>${esc(it.name)}</div>`).join('')}${hits.length>5?`<div style="font-size:10px;color:var(--g400)">+${hits.length-5} 件</div>`:''}</div>`:''}
+        <div class="inv-home-hits"></div>
       </div>
       <div class="inv-card-arr">›</div>
     </div>
@@ -2487,8 +2507,7 @@ function render(){
     const _fuzzy=(e,q)=>!q||e.number.toLowerCase().replace(/\s/g,'').includes(q.toLowerCase().replace(/\s/g,''));
     const q=S.homeSearch.trim();
     const iq=S.homeItemSearch.trim();
-    const _hitsMap=iq?new Map(list.map(e=>[e.id,_itemSearchHits(e.id,iq)])):null;
-    const _matches=e=>_fuzzy(e,q)&&(!iq||(_hitsMap.get(e.id)||[]).length>0);
+    const _matches=e=>_fuzzy(e,q);
     const sortActive=_sort(list.filter(e=>!e.archived&&_matches(e)));
     const archived=_sort(list.filter(e=>e.archived&&_matches(e)));
     const dirArrow=S.homeSortDir==='asc'?'↑':'↓';
@@ -2509,19 +2528,19 @@ function render(){
       </div>
       <div style="margin:6px 20px 0;position:relative">
         <input id="home-item-search" type="text" value="${esc(S.homeItemSearch)}" placeholder="アイテム名を検索…"
-          oninput="S.homeItemSearch=this.value;render()"
+          oninput="S.homeItemSearch=this.value;_applyHomeItemSearch()"
           style="width:100%;padding:9px 32px 9px 12px;border:1px solid ${iq?'var(--k)':'var(--g200)'};border-radius:4px;font-size:12px;font-family:inherit;background:var(--g50);outline:none;color:var(--g800);box-sizing:border-box">
-        ${iq?`<button onclick="S.homeItemSearch='';render()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--g400);font-size:16px;line-height:1;padding:2px">×</button>`:''}
+        <button id="home-item-search-clear" onclick="S.homeItemSearch='';this.style.display='none';document.getElementById('home-item-search').value='';_applyHomeItemSearch()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--g400);font-size:16px;line-height:1;padding:2px;display:${iq?'block':'none'}">×</button>
       </div>
       ${sortActive.length
-        ?`<div class="home-sec" style="display:flex;align-items:center;justify-content:space-between"><span>ACTIVE${(q||iq)?' ('+sortActive.length+'件)':''}</span><div style="display:flex;gap:6px">${sortBtns}</div></div>${sortActive.map(e=>invCardHtml(e,false,_hitsMap?(_hitsMap.get(e.id)||null):null)).join('')}`
-        :`<div style="text-align:center;padding:40px 20px;font-size:10px;color:var(--g400);letter-spacing:1px">${(q||iq)?'該当するインボイスがありません':'インボイスがありません'}</div>`
+        ?`<div class="home-sec" style="display:flex;align-items:center;justify-content:space-between"><span>ACTIVE${q?' ('+sortActive.length+'件)':''}</span><div style="display:flex;gap:6px">${sortBtns}</div></div>${sortActive.map(e=>invCardHtml(e,false)).join('')}`
+        :`<div style="text-align:center;padding:40px 20px;font-size:10px;color:var(--g400);letter-spacing:1px">${q?'該当するインボイスがありません':'インボイスがありません'}</div>`
       }
       ${archived.length?`
         <div class="home-sec" onclick="S.showArchive=!S.showArchive;render()">
           ARCHIVED (${archived.length}) <span style="font-size:11px">${S.showArchive?'▲':'▼'}</span>
         </div>
-        ${S.showArchive?archived.map(e=>invCardHtml(e,true,_hitsMap?(_hitsMap.get(e.id)||null):null)).join(''):''}
+        ${S.showArchive?archived.map(e=>invCardHtml(e,true)).join(''):''}
       `:q?`<div class="home-sec">ARCHIVED (0)</div>`:''}`;
   }
 
@@ -3397,7 +3416,7 @@ ${(()=>{
   document.body.style.overflow=_hasModal?'hidden':'';
   requestAnimationFrame(()=>{if(_forceScrollTop){_forceScrollTop=false;window.scrollTo(0,0);}else{window.scrollTo(0,_sy);}const _pnS=document.getElementById('pn-list-sheet');if(_pnS)_pnS.scrollTop=_pnSy;});
   if(_focId){const el=document.getElementById(_focId);if(el){el.focus();if(_focSS!=null&&el.setSelectionRange)try{el.setSelectionRange(_focSS,_focSE!=null?_focSE:_focSS);}catch(e){}}}
-  _applyItemSearch();_applyPnNameSearch();
+  _applyItemSearch();_applyPnNameSearch();_applyHomeItemSearch();
   const fab=document.getElementById('scroll-fab');
   if(fab){
     fab.style.display=(S.screen==='checklist'&&!S.showEmail)?'flex':'none';
