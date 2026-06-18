@@ -1494,7 +1494,7 @@ function _applyHomeItemSearch(){
     const hitsDiv=wrap.querySelector('.inv-home-hits');
     if(hitsDiv){
       if(hits.length){
-        hitsDiv.innerHTML='<div style="margin-top:7px;padding-top:6px;border-top:1px solid var(--g100)">'+hits.slice(0,5).map(it=>'<div style="font-size:10px;color:var(--g500);line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="color:var(--g300);margin-right:3px">'+esc(it.subOf||it.no)+'.</span>'+esc(it.name)+'</div>').join('')+(hits.length>5?'<div style="font-size:10px;color:var(--g400)">+'+( hits.length-5)+' 件</div>':'')+'</div>';
+        hitsDiv.innerHTML='<div style="margin-top:7px;padding-top:6px;border-top:1px solid var(--g100)">'+hits.slice(0,5).map(it=>'<div style="font-size:10px;color:'+(it.status==='defective'?'var(--red)':'var(--g500)')+';line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="color:var(--g300);margin-right:3px">'+esc(it.subOf||it.no)+'.</span>'+esc(it.name)+'</div>').join('')+(hits.length>5?'<div style="font-size:10px;color:var(--g400)">+'+( hits.length-5)+' 件</div>':'')+'</div>';
       }else{
         hitsDiv.innerHTML='';
       }
